@@ -1,0 +1,16 @@
+{
+  "name": "blogger",
+  "version": "1.0.0",
+  "description": "Blogger auth",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://rochismo@bitbucket.org/rochismo/blogger-full-stack.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/rochismo/blogger-full-stack#readme"
+}
