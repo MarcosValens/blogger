@@ -4,6 +4,16 @@
 
 [ ] Crear modelo (Toni)
 
-[ ] Crear capa de acceso a datos (Marcos)
+[x] Crear capa de acceso a datos (Marcos)
+
+    [x] Post Repository
+    
+    [x] User Repository
+
+[x] Crear capa de servicios (Marcos)
+
+    [x] Post Service
+    
+    [x] User Service
 
 [ ] Crear controladores (Benjamín)
