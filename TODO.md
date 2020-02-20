@@ -20,5 +20,20 @@
 
 [ ] Crear controladores (Benjamín)
 
+    [x] Create interceptors package
+
+    [ ] Create Login Controller
+
+	[x] Add corresponding managers
+
+	[ ] Implement login functionality
+
+    [ ] Create Post Controller
+
+	[x] Add corresponding managers
+
+	[ ] Add post routes
+
+
 [ ] Crear interceptor de tokens (Toni) 
 
