@@ -2,7 +2,7 @@
 
 ## Servidor
 
-[ ] Crear modelo (Toni)
+[x] Crear modelo (Toni)
 
 [x] Crear capa de acceso a datos (Marcos)
 
@@ -20,16 +20,5 @@
 
 [ ] Crear controladores (Benjamín)
 
-    [ ] Create interceptors package
+[ ] Crear interceptor de tokens (Toni) 
 
-    [x] Login controller
-
-        [x] Add corresponding managers
-
-    [ ] Post Controller
-
-        [x] Add corresponding managers
-
-	[ ] Add routes
-
-	    [x] Get all posts route
