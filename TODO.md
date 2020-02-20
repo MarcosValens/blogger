@@ -17,3 +17,15 @@
     [x] User Service
 
 [ ] Crear controladores (Benjamín)
+
+    [ ] Create interceptors package
+
+    [x] Login controller
+
+        [ ] Add corresponding managers
+
+    [ ] Post Controller
+
+        [ ] Add corresponding managers
+
+
