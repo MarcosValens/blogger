@@ -37,3 +37,15 @@
 
 [ ] Crear interceptor de tokens (Toni) 
 
+
+## Cliente
+
+[ ] Vistas
+
+    [ ] Login (Toni)
+
+    [ ] Calorias (Toni)
+
+    [ ] Formulario (crear / editar) (Benjamin)
+
+    [ ] Listado (Benjamin)
