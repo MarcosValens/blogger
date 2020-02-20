@@ -22,10 +22,12 @@
 
     [x] Login controller
 
-        [ ] Add corresponding managers
+        [x] Add corresponding managers
 
     [ ] Post Controller
 
-        [ ] Add corresponding managers
+        [x] Add corresponding managers
 
+	[ ] Add routes
 
+	    [x] Get all posts route

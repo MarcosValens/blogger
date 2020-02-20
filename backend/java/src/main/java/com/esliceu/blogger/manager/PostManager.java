@@ -5,14 +5,16 @@ import com.esliceu.blogger.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PostManager {
 
     @Autowired
     PostRepository postRepository;
 
-    public void getAll(){
-        postRepository.findAll();
+    public List<Post> getAll(){
+        return postRepository.findAll();
     }
 
     public void saveOrUpdatePost(Post post){
