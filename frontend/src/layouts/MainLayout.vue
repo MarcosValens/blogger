@@ -1,39 +1,14 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          @click="leftDrawerOpen = !leftDrawerOpen"
-          icon="menu"
-          aria-label="Menu"
-        />
-
-        <q-toolbar-title>
-          Quasar App
-        </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
+    <q-header elevated class="bg-cyan">
+      <q-toolbar class="glossy">
+        <q-toolbar-title>Blogger</q-toolbar-title>
+        <q-tabs v-model="tabs">
+          <q-tab name="createPost" label="Crear post" />
+          <q-tab name="calories" label="Calculadora de calorías" />
+        </q-tabs>
       </q-toolbar>
     </q-header>
-
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-      content-class="bg-grey-1"
-    >
-      <q-list>
-        <q-item-label header class="text-grey-8">Essential Links</q-item-label>
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
-      </q-list>
-    </q-drawer>
 
     <q-page-container>
       <router-view />
