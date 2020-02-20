@@ -8,11 +8,11 @@ const routes = [
     ],
   },
   {
-    path: '/login',
-    component: () => import('layouts/LoginLayout.vue'),
+    path: '/blogger',
+    component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Login.vue') },
-    ],
+      { path: 'all', component: () => import('pages/Index.vue')}
+    ]
   },
 ];
 
