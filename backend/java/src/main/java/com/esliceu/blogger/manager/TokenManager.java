@@ -1,9 +1,15 @@
 package com.esliceu.blogger.manager;
 
-import com.esliceu.blogger.entity.User;
+import io.jsonwebtoken.Claims;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TokenManager {
-    public String getToken(User user) {return "";}
+    private Claims getClaims(String token) {
+        return null;
+    }
+
+    public Claims validateToken(String token) {
+        return getClaims(token);
+    }
 }
