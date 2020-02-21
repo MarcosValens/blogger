@@ -7,6 +7,13 @@ const routes = [
       { path: '', component: () => import('pages/Index.vue') },
     ],
   },
+  {
+    path: '/blogger',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      { path: 'all', component: () => import('pages/Index.vue')}
+    ]
+  },
 ];
 
 // Always leave this as last one
