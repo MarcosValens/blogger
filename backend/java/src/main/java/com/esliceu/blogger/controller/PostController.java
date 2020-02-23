@@ -59,9 +59,9 @@ public class PostController {
         postManager.saveOrUpdatePost(post);
     }
 
-    @GetMapping("/update/{idPlanet}")
-    public Post updatePost(@PathVariable(value = "idPlanet")String idPlanet){
-        return postManager.getPostById(Long.parseLong(idPlanet));
+    @GetMapping("/update/{idPost}")
+    public Post updatePost(@PathVariable(value = "idPost")String idPost){
+        return postManager.getPostById(Long.parseLong(idPost));
     }
 
     @PostMapping("/deletePost")
