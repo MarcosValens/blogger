@@ -17,6 +17,10 @@ public class PostManager {
         return postRepository.findAll();
     }
 
+    public Post getPostById(long id){
+        return postRepository.findByIdPost(id);
+    }
+
     public void saveOrUpdatePost(Post post){
         postRepository.save(post);
     }
