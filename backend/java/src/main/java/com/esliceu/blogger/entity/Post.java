@@ -1,7 +1,8 @@
 package com.esliceu.blogger.entity;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "post")
@@ -12,10 +13,10 @@ public class Post {
     private long idPost;
 
     @Column(name = "published")
-    private LocalDate published;
+    private LocalDateTime published;
 
     @Column(name = "updated")
-    private LocalDate updated;
+    private LocalDateTime updated;
 
     @Column(name = "url")
     private String url;
@@ -25,6 +26,9 @@ public class Post {
 
     @Column(name = "translatedTitle")
     private String translatedTitle;
+
+    @Column(name = "content")
+    private String content;
 
     @Column(name = "translatedContent")
     private String translatedContent;
@@ -50,19 +54,19 @@ public class Post {
         this.idPost = idPost;
     }
 
-    public LocalDate getPublished() {
+    public LocalDateTime getPublished() {
         return published;
     }
 
-    public void setPublished(LocalDate published) {
+    public void setPublished(LocalDateTime published) {
         this.published = published;
     }
 
-    public LocalDate getUpdated() {
+    public LocalDateTime getUpdated() {
         return updated;
     }
 
-    public void setUpdated(LocalDate updated) {
+    public void setUpdated(LocalDateTime updated) {
         this.updated = updated;
     }
 
@@ -90,6 +94,14 @@ public class Post {
         this.translatedTitle = translatedTitle;
     }
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     public String getTranslatedContent() {
         return translatedContent;
     }
@@ -112,5 +124,13 @@ public class Post {
 
     public void setTranslatedLanguage(String translatedLanguage) {
         this.translatedLanguage = translatedLanguage;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
