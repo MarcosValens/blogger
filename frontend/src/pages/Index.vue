@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     onLoad(index, done) {
-      etTimeout(() => {
+      setTimeout(() => {
         if (this.posts) {
           this.posts.push("Test", "Test 2", "Test 3", "Test4");
           done();

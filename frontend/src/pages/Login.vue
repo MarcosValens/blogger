@@ -12,7 +12,6 @@
                   <q-input square filled clearable v-model="password" type="password" label="password" />
               </q-form>
               <GoogleLogin :params="params" :renderParams="renderParams" :onSuccess="onSuccess" :onFailure="onFailure" filled></GoogleLogin>
-              <GoogleLogin :params="params" :logoutButton=true >Logout</GoogleLogin>
               <q-card-actions>
                 <q-btn color="blue" size="lg" class="full-width" label="Login" />
               </q-card-actions>
@@ -68,12 +67,13 @@ export default {
   methods: {
         onSuccess(googleUser) {
             console.log(googleUser);
- 
+            console.log(GoogleLogin);
+            document.querySelector("#logout").style.display = 'unset';
             // This only gets the user information: id, name, imageUrl and email
             console.log(googleUser.getBasicProfile());
         },
 
-        onFailure(){
+        onFailure(error){
           console.log(error);
         }
     }
