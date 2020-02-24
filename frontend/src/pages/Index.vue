@@ -1,9 +1,9 @@
 <template>
   <q-page class="flex flex-center">
-    <div class="q-pa-md">
+    <div class="q-pa-md" @click="addData">
       <q-infinite-scroll @load="onLoad" :offset="50">
         <div v-for="(post, index) in posts" :key="index" class="caption">{{post}}</div>
-        <template v-slot:loading>
+        <template v-if="loading">
           <div class="row justify-center q-my-md">
             <q-spinner-dots color="primary" size="40px" />
           </div>
@@ -24,16 +24,23 @@ export default {
     user: {
       type: Object,
       default: () => {}
+    },
+    loading: {
+      type: Boolean,
+      default: false
     }
   },
+  data() {
+    return {};
+  },
   methods: {
-    onLoad(index, done) {
-      etTimeout(() => {
-        if (this.posts) {
-          this.posts.push("Test", "Test 2", "Test 3", "Test4");
-          done();
-        }
-      }, 2000);
+    onLoad(index, done) {},
+    addData() {
+      this.loading = true;
+      setTimeout(_ => {
+        this.posts.push("Post x");
+        this.loading = false;
+      }, 1000);
     }
   }
 };
