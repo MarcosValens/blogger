@@ -25,15 +25,12 @@ public class TokenInterceptor implements HandlerInterceptor {
             if (auth != null && !auth.isEmpty()) {
                 String token = auth.replace("Bearer ", "");
                 Claims valid =  tokenManager.validateToken(token);
-                //TODO: cast valid boolean to Claims.
-                /*
-                if (!valid){
+                if (valid == null){
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     return false;
                 } else {
                     response.setStatus(HttpServletResponse.SC_OK);
                 }
-                 */
             }
             return true;
         } catch (JwtException e){
