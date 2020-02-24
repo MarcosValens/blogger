@@ -34,15 +34,6 @@ export default {
     return {};
   },
   methods: {
-<<<<<<< HEAD
-    onLoad(index, done) {},
-    addData() {
-      this.loading = true;
-      setTimeout(_ => {
-        this.posts.push("Post x");
-        this.loading = false;
-      }, 1000);
-=======
     onLoad(index, done) {
       setTimeout(() => {
         if (this.posts) {
@@ -50,7 +41,6 @@ export default {
           done();
         }
       }, 2000);
->>>>>>> 669be0ed78022d7a831ef1881f4dce6dd0bad3f1
     }
   }
 };
