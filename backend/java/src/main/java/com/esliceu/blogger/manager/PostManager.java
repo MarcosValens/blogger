@@ -1,6 +1,7 @@
 package com.esliceu.blogger.manager;
 
 import com.esliceu.blogger.entity.Post;
+import com.esliceu.blogger.entity.User;
 import com.esliceu.blogger.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,4 +29,5 @@ public class PostManager {
     public void deletePost(Post post){
         postRepository.delete(post);
     }
+
 }
