@@ -34,13 +34,13 @@ export default {
     return {};
   },
   methods: {
-    onLoad(index, done) {},
-    addData() {
-      this.loading = true;
-      setTimeout(_ => {
-        this.posts.push("Post x");
-        this.loading = false;
-      }, 1000);
+    onLoad(index, done) {
+      setTimeout(() => {
+        if (this.posts) {
+          this.posts.push("Test", "Test 2", "Test 3", "Test4");
+          done();
+        }
+      }, 2000);
     }
   }
 };
