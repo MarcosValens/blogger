@@ -1,25 +1,52 @@
 <template>
   <q-page class="flex flex-center">
-    <div class="q-pa-md" @click="addData">
-      <q-infinite-scroll @load="onLoad" :offset="50">
-        <div v-for="(post, index) in posts" :key="index" class="caption">{{post}}</div>
-        <template v-if="loading">
-          <div class="row justify-center q-my-md">
-            <q-spinner-dots color="primary" size="40px" />
-          </div>
-        </template>
-      </q-infinite-scroll>
+    
+    <div class="q-pa-md">
+      <q-list bordered>
+        <q-item v-ripple v-for="post in posts" :key="post.id">
+          <q-item-section>
+            <q-item-label>{{ post.title }}</q-item-label>
+            <q-item-label caption>Written on {{ post.origLanguage }}. Translated to {{ post.dstLanguage }}</q-item-label>
+          </q-item-section>
+          <q-item-section>
+            <q-chip icon="edit" clickable="true">Edit post</q-chip>
+          </q-item-section>
+          <q-item-section>
+            <q-chip icon="delete_forever" clickable="true">Delete post</q-chip>
+          </q-item-section>
+        </q-item>
+      </q-list>
     </div>
   </q-page>
 </template>
 
 <script>
+// Post content to display: Title, orig language, translated language, edit / delete button
 export default {
   name: "AllPosts",
   props: {
     posts: {
       type: Array,
-      default: () => ["Test", "Test 2", "Test 3", "Test4"]
+      default: () => [
+        {
+          id: 1,
+          title: "Title number 1",
+          origLanguage: "Spanish",
+          dstLanguage: "Afrikaans"
+        },
+        {
+          id: 2,
+          title: "Title number 2",
+          origLanguage: "English",
+          dstLanguage: "Russian"
+        },
+        {
+          id: 3,
+          title: "Title number 3",
+          origLanguage: "Catalan",
+          dstLanguage: "Nibberian"
+        }
+      ]
     },
     user: {
       type: Object,
@@ -34,14 +61,7 @@ export default {
     return {};
   },
   methods: {
-    onLoad(index, done) {
-      setTimeout(() => {
-        if (this.posts) {
-          this.posts.push("Test", "Test 2", "Test 3", "Test4");
-          done();
-        }
-      }, 2000);
-    }
+    onLoad(index, done) {}
   }
 };
 </script>
