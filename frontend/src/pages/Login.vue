@@ -32,7 +32,23 @@
                 filled
               ></GoogleLogin>
             </q-card-actions>
-          </q-card-section>
+          </q-card-section>=======
+          <q-card-section>
+            <q-form class="q-gutter-md">
+              <q-input square filled clearable v-model="email" type="email" label="email" />
+              <q-input square filled clearable v-model="password" type="password" label="password" />
+            </q-form>
+            <GoogleLogin
+              :params="params"
+              :renderParams="renderParams"
+              :onSuccess="onSuccess"
+              :onFailure="onFailure"
+              filled
+            ></GoogleLogin>
+            <q-card-actions>
+              <q-btn color="blue" size="lg" class="full-width" label="Login" />
+            </q-card-actions>
+          </q-card-section>>>>>>>> 669be0ed78022d7a831ef1881f4dce6dd0bad3f1
         </q-card>
       </div>
     </div>
@@ -110,9 +126,8 @@ export default {
         } else {
           this.errors.push(codes[err.response.status]);
         }
-      });
+      })
     },
-
     _perform(token) {},
   }
 };
