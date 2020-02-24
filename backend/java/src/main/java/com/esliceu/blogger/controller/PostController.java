@@ -41,7 +41,7 @@ public class PostController {
             @RequestParam("title") String title,
             @RequestParam("content") String content,
             @RequestParam("originalLenguage") String originalLanguage,
-            @RequestParam("translatedLenguage") String translatedLenguage,
+            @RequestParam("translatedLanguage") String translatedLanguage,
             @RequestParam("userMail") String userMail){
         Post post = new Post();
         if(idPost != null){
@@ -54,7 +54,7 @@ public class PostController {
         post.setTitle(title);
         post.setContent(content);
         post.setOriginalLanguage(originalLanguage);
-        post.setTranslatedLanguage(translatedLenguage);
+        post.setTranslatedLanguage(translatedLanguage);
         post.setPublished(LocalDateTime.now());
         postManager.saveOrUpdatePost(post);
     }
@@ -68,5 +68,11 @@ public class PostController {
     public void deletePost(@RequestParam("idPost") String idPost){
         Post post = postManager.getPostById(Long.parseLong(idPost));
         postManager.deletePost(post);
+    }
+
+    @GetMapping("/posts/(userEmail}")
+    public List<Post> getUserPosts(@PathVariable(value = "userEmail") String userEmail) {
+        User user = userManager.findByUserName(userEmail);
+        return user.getPosts();
     }
 }

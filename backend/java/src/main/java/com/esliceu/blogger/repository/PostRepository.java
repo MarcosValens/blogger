@@ -12,4 +12,6 @@ public interface PostRepository extends CrudRepository <Post,Long>{
     Post findByTitleContains(String title);
 
     Post findByIdPost(long idPost);
+
+
 }
