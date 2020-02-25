@@ -27,7 +27,7 @@
               filled
             ></GoogleLogin>
             <q-card-actions>
-              <q-btn color="blue" size="lg" class="full-width" label="Login" @click="login"/>
+              <q-btn color="blue" size="lg" class="full-width" label="Login" @click="login" />
             </q-card-actions>
           </q-card-section>
         </q-card>
@@ -59,7 +59,7 @@ const codes = {
   400: "Resource not found",
   401: "Failed to login. Check your credentials",
   500: "Server error"
-}
+};
 export default {
   name: "Login",
   data() {
@@ -97,19 +97,23 @@ export default {
 
     login() {
       this.errors = [];
-      this.$axios.get("	http://server247.cfgs.esliceu.net/t4/login.php?user="+this.email+'&password='+this.password)
-      .then(response => {
-        this.$router.push("/blogger")
-      })
-      .catch(err => {
-        if (!err.response) {
-          this.errors.push("Unknown error");
-        } else {
-          this.errors.push(codes[err.response.status]);
-        }
-      })
+      this.$axios
+        .post("http://localhost:9999/users/login", {
+          email: this.email,
+          password: this.password
+        })
+        .then(response => {
+          this.$router.push("/blogger/all");
+        })
+        .catch(err => {
+          if (!err.response) {
+            this.errors.push("Unknown error");
+          } else {
+            this.errors.push(codes[err.response.status]);
+          }
+        });
     },
-    _perform(token) {},
+    _perform(token) {}
   }
 };
 </script>
