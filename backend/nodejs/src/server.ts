@@ -3,12 +3,11 @@ import { Server } from '@overnightjs/core';
 import cors from 'cors';
 
 export default class BloggerServer extends Server {
-    constructor(mode?: boolean) {
+    constructor(mode: boolean, whitelist: Array<string>) {
         super(mode);
         this.app.use(bodyParser.json());
-        this.app.use(bodyParser.urlencoded({extended: true}));
-        
-        const whitelist: Array<string> = ["http://localhost:8080"];
+        this.app.use(bodyParser.urlencoded({ extended: true }));
+
         const options: cors.CorsOptions = {
             origin: whitelist,
             credentials: true,
@@ -27,7 +26,7 @@ export default class BloggerServer extends Server {
     }
 
 
-    public start(port: number, callback: any = () => {}): void {
+    public start(port: number, callback: any = () => { }): void {
         this.app.listen(port, callback);
     }
 }
