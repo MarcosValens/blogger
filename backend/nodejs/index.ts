@@ -1,4 +1,7 @@
 import BloggerServer from './src/server';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const port: number = parseInt(process.env.PORT) || 3000;
 const mode: string = process.env.MODE ? process.env.MODE : "development"  
