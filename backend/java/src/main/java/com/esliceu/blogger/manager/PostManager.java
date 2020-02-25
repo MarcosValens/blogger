@@ -23,6 +23,7 @@ public class PostManager {
     }
 
     public void saveOrUpdatePost(Post post){
+
         postRepository.save(post);
     }
 
