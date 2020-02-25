@@ -1,4 +1,4 @@
-import BloggerServer from './src/server';
+import BloggerServer from './server';
 import dotenv from 'dotenv';
 
 dotenv.config();
