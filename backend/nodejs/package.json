@@ -4,7 +4,7 @@
   "description": "Blogger auth",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "tsc && node ./dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -12,5 +12,18 @@
   },
   "author": "",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/rochismo/blogger-full-stack#readme"
+  "homepage": "https://bitbucket.org/rochismo/blogger-full-stack#readme",
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "typescript": "^3.8.2"
+  },
+  "dependencies": {
+    "@overnightjs/core": "^1.6.14",
+    "express": "^4.17.1",
+    "http-status-codes": "^1.4.0",
+    "mysql": "^2.18.1",
+    "passport": "^0.4.1",
+    "passport-google-oauth2": "^0.2.0",
+    "passport-local": "^1.0.0"
+  }
 }
