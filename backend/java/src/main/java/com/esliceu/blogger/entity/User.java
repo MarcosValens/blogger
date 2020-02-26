@@ -1,5 +1,7 @@
 package com.esliceu.blogger.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -22,6 +24,7 @@ public class User {
     @Column(name = "username")
     private String username;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Post> posts;
 
