@@ -74,8 +74,8 @@ public class PostController {
         return postManager.getPostById(Long.parseLong(idPost));
     }
 
-    @PostMapping("/deletePost")
-    public void deletePost(@RequestParam("idPost") String idPost) {
+    @GetMapping("/deletePost/{idPost}")
+    public void deletePost(@PathVariable("idPost") String idPost) {
         Post post = postManager.getPostById(Long.parseLong(idPost));
         postManager.deletePost(post);
     }
