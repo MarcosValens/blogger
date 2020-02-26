@@ -15,10 +15,12 @@ const routes = [
     ]
   },
   {
-    path: '/blogger',
+    path: '/blogger/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: 'all', component: () => import('pages/Index.vue')}
+      { path: '', component: () => import('pages/Index.vue')},
+      { path: 'calorieCalculator', component: () => import('pages/CalorieCalculator.vue')}
+
     ]
   },
 ];
