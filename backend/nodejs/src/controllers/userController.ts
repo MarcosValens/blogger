@@ -8,7 +8,6 @@ export class UserController {
     public login(req: Request, res: Response): any {
         const email: string = req.body.email;
         const password: string = req.body.password;
-        console.log(req.body.data)
         if (email === "test@gmail.com" && password === "123") {
             return res.status(OK).send("Token should go here");
         } 
