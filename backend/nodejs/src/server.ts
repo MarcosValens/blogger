@@ -1,4 +1,5 @@
 import * as bodyParser from 'body-parser';
+import * as controllers from './controllers';
 import { Server } from '@overnightjs/core';
 import cors from 'cors';
 
@@ -22,7 +23,14 @@ export default class BloggerServer extends Server {
 
 
     private setupControllers(): void {
-        // TODO: Implement me
+        const controllerInstances = [];
+        for (const name of Object.keys(controllers)) {
+            const controller = (controllers as any)[name];
+            if (typeof controller === 'function') {
+                controllerInstances.push(new controller());
+            }
+        }
+        super.addControllers(controllerInstances);
     }
 
 
