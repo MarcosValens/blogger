@@ -8,11 +8,12 @@ const routes = [
     ]
   },
   {
-    path: '/blogger',
+    path: '/blogger/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/Index.vue')},
-      { path: 'create', component: () => import('pages/BlogForm.vue')}
+      { path: 'create', component: () => import('pages/BlogForm.vue')},
+      { path: 'calorieCalculator', component: () => import('pages/CalorieCalculator.vue')}
     ]
   },
 ];
