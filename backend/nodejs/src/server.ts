@@ -1,5 +1,6 @@
 import * as bodyParser from 'body-parser';
 import * as controllers from './controllers';
+import * as passport from 'passport';
 import { Server } from '@overnightjs/core';
 import cors from 'cors';
 
@@ -18,6 +19,7 @@ export default class BloggerServer extends Server {
         };
 
         this.app.use(cors(options));
+        this.app.use(passport.initialize());
         this.setupControllers();
     }
 
