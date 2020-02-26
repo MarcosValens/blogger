@@ -1,6 +1,6 @@
 import * as bodyParser from 'body-parser';
 import * as controllers from './controllers';
-import * as passport from 'passport';
+import passport from 'passport';
 import { Server } from '@overnightjs/core';
 import cors from 'cors';
 
