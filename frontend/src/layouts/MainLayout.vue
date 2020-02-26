@@ -5,7 +5,7 @@
         <q-toolbar-title>Blogger</q-toolbar-title>
         <q-tabs v-model="tabs">
           <q-tab name="createPost" label="Crear post" @click="redirect('create')"/>
-          <q-tab name="calories" label="Calculadora de calorías"/>
+          <q-tab name="calories" label="Calculadora de calorías" @click="redirect('calorieCalculator')"/>
         </q-tabs>
       </q-toolbar>
     </q-header>

@@ -1,36 +1,44 @@
 <template>
   <q-page class="flex flex-center">
     <div class="q-pa-md">
-      <q-list bordered>
-        <q-item v-ripple v-for="(post, index) in posts" :key="post.idPost">
-          <q-item-section>
-            <q-item-label>{{ post.title }}</q-item-label>
-            <q-item-label
-              caption
-            >Written on {{ post.originalLanguage }}. Translated to {{ post.translatedLanguage }}</q-item-label>
-          </q-item-section>
-          <q-item-section>
-            <q-chip icon="edit" clickable>Edit post</q-chip>
-          </q-item-section>
-          <q-item-section>
-            <q-chip icon="delete_forever" clickable @click="remove(post.idPost, index)">Delete post </q-chip>
-            
-          </q-item-section>
-        </q-item>
+      <div v-if="!posts.length">
+              
+        <h1>No posts available <q-btn color="blue" size="lg" 
+          class="full-width" label="Create a new Post!" @click="call('create')" /></h1>
+      </div>
+      <q-list bordered v-if="posts.length">
+        <div v-for="(post, index) in posts" :key="post.idPost">
+          <Post :post="post" :index="index"></Post>
+        </div>
+        
       </q-list>
     </div>
   </q-page>
 </template>
 
 <script>
+import Post from './../components/Post';
 // Post content to display: Title, orig language, translated language, edit / delete button
 export default {
   name: "AllPosts",
+  components: {
+    Post
+  },
   data() {
     return {
-      posts: [],
-      removePost: false
+      posts: [
+        {title: "Hello",
+        idPost: 1,
+        translatedLanguage: "Spanish",
+        originalLanguage: "English"}
+      ]
     };
+  },
+  methods: {
+    call(route) {
+      this.$router.replace(`/blogger/${route}`)
+    }
+
   },
   created() {
     const url = "http://172.16.3.75:8080/posts/all";
@@ -38,18 +46,6 @@ export default {
       console.log(data[0]);
       this.posts = data;
     });
-  },
-  methods: {
-    remove(id, index) {
-      const url = "http://172.16.3.75:8080/posts/deletePost/";
-      // TODO: Make this be a dialog
-      const toDelete = confirm("Are you sure you want to delete the post?");
-      if (toDelete) {
-        this.$axios.get(`${url}${id}`).then(data => {
-          this.posts.splice(index, 1);
-        }).catch(console.log);
-      }
-    }
   }
 };
 </script>
