@@ -30,7 +30,7 @@ export class UserController {
     private async loginGoogleCallback(req: Request, res: Response): Promise<any> {
         const user = req.user;
 
-        const token = jwt.sign(user, "secret", {
+        const token = jwt.sign(user, process.env.JWT_SECRET, {
             expiresIn: '1d',
             subject: user + ""
         });
