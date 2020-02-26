@@ -1,7 +1,6 @@
 import BloggerServer from './server';
-import dotenv from 'dotenv';
 
-dotenv.config();
+require('./config/environment');
 
 
 const port: number = parseInt(process.env.PORT) || 3000;
