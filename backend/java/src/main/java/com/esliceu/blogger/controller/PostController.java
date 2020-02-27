@@ -41,6 +41,14 @@ public class PostController {
         return postManager.getAll();
     }
 
+    @GetMapping("userPosts")
+    public List<Post> getUserPosts(@RequestBody() String userJson) {
+        JsonObject convertedObject = new Gson().fromJson(userJson, JsonObject.class);
+        String userString = convertedObject.get("user").getAsString();
+        User user = userManager.findByEmailOrUsername(userString, userString);
+        return postManager.getUserPosts(user);
+    }
+
     @PostMapping("/save")
     public ResponseEntity<String> savePost(
             @RequestBody() String postJson) {
@@ -78,11 +86,5 @@ public class PostController {
     public void deletePost(@PathVariable("idPost") String idPost) {
         Post post = postManager.getPostById(Long.parseLong(idPost));
         postManager.deletePost(post);
-    }
-
-    @GetMapping("/posts/(userEmail}")
-    public List<Post> getUserPosts(@PathVariable(value = "userEmail") String userEmail) {
-        User user = userManager.findByEmailOrUsername(userEmail, userEmail);
-        return user.getPosts();
     }
 }

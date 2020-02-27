@@ -14,20 +14,23 @@ public class PostManager {
     @Autowired
     PostRepository postRepository;
 
-    public List<Post> getAll(){
+    public List<Post> getAll() {
         return postRepository.findAll();
     }
 
-    public Post getPostById(long id){
+    public List<Post> getUserPosts(User user) {
+        return postRepository.findByUser(user);
+    }
+
+    public Post getPostById(long id) {
         return postRepository.findByIdPost(id);
     }
 
-    public void saveOrUpdatePost(Post post){
-
+    public void saveOrUpdatePost(Post post) {
         postRepository.save(post);
     }
 
-    public void deletePost(Post post){
+    public void deletePost(Post post) {
         postRepository.delete(post);
     }
 
