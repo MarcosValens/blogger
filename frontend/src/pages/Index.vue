@@ -2,12 +2,17 @@
   <q-page class="flex">
     <q-drawer show-if-above side="left" bordered>
       <!-- drawer content -->
+      <q-input label="Search" v-model="text" @input="filterPosts" class="q-ma-sm" />
+      <q-scroll-area class="fit">
+        <q-list v-for="(post, index) in postsCopy" :key="post.idPost">
+          <Post :post="post" :index="index" @click.native="setPost(post)"/>
+          <q-separator/>
+        </q-list>
+      </q-scroll-area>
     </q-drawer>
     <div class="q-pa-md flex-center">
-      <q-input label="Search" v-model="text" @input="filterPosts" class="q-mb-lg" />
-
       <div v-if="!postsCopy.length">
-        <h1>
+        <h2>
           No posts available
           <q-btn
             color="blue"
@@ -16,14 +21,10 @@
             label="Create a new Post!"
             @click="call('create')"
           />
-        </h1>
+        </h2>
       </div>
-      <div v-if="postsCopy.length">
-        <q-list bordered>
-          <div v-for="(post, index) in postsCopy" :key="post.idPost">
-            <Post :post="post" :index="index"></Post>
-          </div>
-        </q-list>
+      <div v-else-if="!selectedPost" class="q-pa-md">
+        <h2>No post selected</h2>
       </div>
     </div>
   </q-page>
@@ -57,7 +58,8 @@ export default {
           createdAt: new Date()
         }
       ],
-      text: ""
+      text: "",
+      selectedPost: null
     };
   },
   methods: {
@@ -66,9 +68,10 @@ export default {
     },
     filterPosts() {
       const regex = new RegExp(this.text, "gi");
-      this.postsCopy = this.posts.filter(({ title }) => 
-        title.match(regex)
-      );
+      this.postsCopy = this.posts.filter(({ title }) => title.match(regex));
+    },
+    setPost(post) {
+      this.selectedPost = post;
     }
   },
   created() {
