@@ -1,14 +1,17 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated class="bg-cyan">
+  <q-layout view="hHh LpR fff">
+    <q-header elevated class="bg-primary text-white" height-hint="98">
       <q-toolbar class="glossy">
         <q-toolbar-title>Blogger</q-toolbar-title>
-        <q-tabs v-model="tabs">
-          <q-tab name="createPost" label="Crear post" @click="redirect('create')"/>
-          <q-tab name="calories" label="Calculadora de calorías" @click="redirect('calorieCalculator')"/>
+        <q-tabs align="left">
+          <q-route-tab to="/blogger" label="Home" />
+          <q-route-tab to="/blogger/create" label="Create a post" />
+          <q-route-tab to="/calories" label="Calorie calculator" />
         </q-tabs>
       </q-toolbar>
     </q-header>
+
+    
 
     <q-page-container>
       <router-view />
@@ -17,24 +20,23 @@
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink';
+import EssentialLink from "components/EssentialLink";
 
 export default {
-  name: 'MainLayout',
+  name: "MainLayout",
   props: {
     tabs: Array
   },
   components: {
-    EssentialLink,
+    EssentialLink
   },
 
   data() {
-    return {
-    };
+    return {};
   },
   methods: {
     redirect(path) {
-      this.$router.push('/blogger/'+path);
+      this.$router.push("/blogger/" + path);
     }
   }
 };
