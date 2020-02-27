@@ -19,7 +19,7 @@
     <q-separator />
     <div class="row">
       <div class="col">
-        <p class="q-ma-md">{{ post.content }}</p>
+        <p class="q-ma-md text-justify">{{ post.content }}</p>
       </div>
     </div>
     <div class="row">

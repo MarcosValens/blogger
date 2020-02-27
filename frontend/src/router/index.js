@@ -26,7 +26,10 @@ export default function (/* { store, ssrContext } */) {
     base: process.env.VUE_ROUTER_BASE,
   });
 
-  Router.beforeEach((to, from, next) => {
+  Router.beforeEach(({matched}, from, next) => {
+    const [is404] = matched;
+    const {components} = is404;
+    console.log(is404) 
     next();
   })
 

@@ -11,8 +11,6 @@
       </q-toolbar>
     </q-header>
 
-    
-
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -20,24 +18,8 @@
 </template>
 
 <script>
-import EssentialLink from "components/EssentialLink";
 
 export default {
   name: "MainLayout",
-  props: {
-    tabs: Array
-  },
-  components: {
-    EssentialLink
-  },
-
-  data() {
-    return {};
-  },
-  methods: {
-    redirect(path) {
-      this.$router.push("/blogger/" + path);
-    }
-  }
 };
 </script>

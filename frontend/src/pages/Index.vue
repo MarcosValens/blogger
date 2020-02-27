@@ -1,6 +1,6 @@
 <template>
   <q-page class>
-    <q-drawer side="left" bordered>
+    <q-drawer show-if-above side="left" bordered>
       <!-- drawer content -->
       <q-input label="Search" v-model="text" @input="filterPosts" class="q-ma-sm" />
       <q-scroll-area class="fit">
