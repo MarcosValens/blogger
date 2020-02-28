@@ -94,6 +94,7 @@ export default {
         document.getElementById(document.getElementById("selectedExercise").firstChild.nextSibling.id + "Div").innerHTML = document.getElementById("selectedExercise").firstChild.nextSibling.outerHTML;
         document.getElementById(document.getElementById("selectedExercise").firstChild.nextSibling.id+"Div").firstChild.setAttribute("draggable","draggable");
         document.getElementById(document.getElementById("selectedExercise").firstChild.nextSibling.id+"Div").firstChild.addEventListener("dragstart",this.drag);
+
         document.getElementById("selectedExercise").firstChild.nextSibling.remove();
       }
     },
@@ -103,9 +104,43 @@ export default {
     send(){
       console.log("Enviado");
     },
+    preload: function(){
+      let video;
+      const label = "esperando...";
+      let classifier;
+      classifier = ml5.imageClassifier("/statics/modelo/model.json");
+    },
+    setup: function() {
+    createCanvas(640, 520);
+    video = createCapture(VIDEO);
+    video.hide();
+    this.classifyVideo();
+    },
+    classifyVideo: async function() {
+    classifier.classify(video, gotResults);
+    },
+    draw: function() {
+    background(0);
+    image(video, 0, 0);
+    textSize(32);
+    textAlign(CENTER, CENTER);
+    fill(255);
+    text(label, width / 2, height - 16);
+  },
+    gotResults: function(error, results) {
+       if (error) {
+          return;
+        }
+        if (results[0].confidence > 0.99) {
+        label = results[0].label;
+        addFruit(results[0]);
+        }
+        classifyVideo();
+    },
     getAliments(){
       console.log("Alimentos ")
+      }
     }
-  }
 }
+
 </script>
