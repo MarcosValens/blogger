@@ -43,6 +43,12 @@
             </q-card-actions>
           </q-card-section>
         </q-card>
+        <q-card>
+          <h5>Registro de alimentos</h5>
+          <h4> Los alimentos ya añadidos son los siguientes:</h4>
+          <div id="taula"></div>
+          <q-btn color="blue" size="lg" label="Conseguir Calorias" @click="getAliments"/>
+        </q-card>
         </div>
     </q-page>
 </template>
@@ -68,34 +74,38 @@ export default {
       sexo: 'line',
       altura: false,
       edad:false,
-      kilos:false
+      kilos:false,
     }
   },
   methods:{
-    allowDrop: ev => {
+    allowDrop: function (ev) {
       ev.preventDefault();
     },
-    drag: ev =>{
+    drag: function (ev){
       ev.dataTransfer.setData("text", ev.target.id);
     },
-    drop: ev => {
+    drop: function (ev) {
       ev.preventDefault();
       let data = ev.dataTransfer.getData("text");
       if (document.getElementById("selectedExercise").childElementCount == 0) {
           ev.target.appendChild(document.getElementById(data));
       } else {
-        insertAfter(document.getElementById(data), document.getElementById("selectedExercise").lastChild);
+        this.insertAfter(document.getElementById(data), document.getElementById("selectedExercise").lastChild);
         document.getElementById(document.getElementById("selectedExercise").firstChild.nextSibling.id + "Div").innerHTML = document.getElementById("selectedExercise").firstChild.nextSibling.outerHTML;
+        document.getElementById(document.getElementById("selectedExercise").firstChild.nextSibling.id+"Div").firstChild.setAttribute("draggable","draggable");
+        document.getElementById(document.getElementById("selectedExercise").firstChild.nextSibling.id+"Div").firstChild.addEventListener("dragstart",this.drag);
         document.getElementById("selectedExercise").firstChild.nextSibling.remove();
       }
     },
-    insertAfter(newNode, referenceNode) {
-    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+    insertAfter: function (newNode, referenceNode) {
+      referenceNode.parentNode.insertBefore(newNode, referenceNode);
     },
     send(){
-      console.log("Enviado")
+      console.log("Enviado");
+    },
+    getAliments(){
+      console.log("Alimentos ")
     }
   }
 }
-
 </script>
