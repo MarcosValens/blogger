@@ -19,7 +19,7 @@
               <q-input square filled clearable v-model="title" type="text" label="Title" />
               <q-input square filled clearable v-model="content" type="textarea" label="Content" />
             </q-form>
-
+            
             <q-card-actions>
               <q-btn color="blue" size="lg" class="full-width" label="Submit" @click="send" />
             </q-card-actions>
