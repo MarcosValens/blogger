@@ -1,3 +1,5 @@
+//TODO ELEGIR DE QUE MANERA QUEREMOS TRABAJAR, SIN ORM (COMENTADO), CON ORM(SIN COMENTAR)
+
 /*import {createPool} from 'mysql2/promise';
 
 require('../.env');
