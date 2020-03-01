@@ -5,15 +5,15 @@
         <q-card square bordered class="shadow-1">
           <q-card-section>
             <q-form class="q-gutter-md">
-              <div class="q-gutter-sm">
+              <div id="gender" class="q-gutter-sm">
                 <h5>Indica tu sexo</h5>
                   <q-radio v-model="sexo" val="Hombre" label="Hombre" />
                   <q-radio v-model="sexo" val="Mujer" label="Mujer" />
               </div>  
               <div class="q-gutter-sm">
-                Kilos<q-input v-model.number="kilos" type="number" placeholder="Kilos en kg" filled style="max-width: 200px" />
+                Peso<q-input v-model.number="peso" type="number" placeholder="Kilos en kg" filled style="max-width: 200px"/>
                 Altura<q-input v-model.number="altura" type="number" placeholder="Altura en cm" filled style="max-width: 200px"/>
-                Edad <q-input v-model.number="edad" type="number" placeholder="Edad en años" filled style="max-width: 200px" />
+                Edad <q-input v-model.number="edad" type="number" placeholder="Edad en años" filled style="max-width: 200px"/>
               </div>
               <div>
                 <h5>Selecciona el ejercicio que realizas semanalmente.</h5>
@@ -24,8 +24,7 @@
                     <img src="../statics/img/ejercicioLigero.png" :draggable="draggable" @dragstart="drag" @dragover.stop  id="ejercicioLigero">
                   </div>
                   <div id="ejercicioModeradoDiv" @drop.prevent="drop"  @dragover.prevent="allowDrop">
-                    <img src="../statics/img/ejercicioModerado.png" :draggable="draggable" @dragstart="drag" @dragover.stop
-                    id="ejercicioModerado">
+                    <img src="../statics/img/ejercicioModerado.png" :draggable="draggable" @dragstart="drag" @dragover.stop id="ejercicioModerado">
                   </div>
                   <div id="ejercicioFuerteDiv" @drop.prevent="drop"  @dragover.prevent="allowDrop">
                     <img src="../statics/img/ejercicioFuerte.png" :draggable="draggable" @dragstart="drag" @dragover.stop id="ejercicioFuerte">
@@ -34,12 +33,12 @@
                     <img src="../statics/img/ejercicioExtremo.png" :draggable="draggable" @dragstart="drag" @dragover.stop id="ejercicioExtremo">
                   </div>
               </div>
-              <div id="selectedExercise" @drop.capture="drop"  @dragover.capture="allowDrop" class="col-4">           
+              <div id="selectedExercise" @drop.capture="drop"  @dragover.capture="allowDrop">           
               </div>
             </q-form>
-          
             <q-card-actions>
-              <q-btn color="blue" size="lg" class="full-width" label="Submit" @click="send" />
+              <q-btn color="blue" size="lg" class="full-width" label="Submit" @click="calculateTMB" />
+               <h3 id="caloriasNecesarias" style="display: none">Tus calorías necesarías son las siguientes: </h3>
             </q-card-actions>
           </q-card-section>
         </q-card>
@@ -74,10 +73,59 @@ export default {
       sexo: 'line',
       altura: false,
       edad:false,
-      kilos:false,
+      peso:false,
+      ejercicio: "",
     }
   },
   methods:{
+    calculateTMB: function() {
+      let TMB;
+      let caloriesNeeded;
+      let exercici;
+
+      if(this.sexo == false || this.edad == false || this.altura == false || this.peso == false){
+       alert("Por favor, revise sus valores");
+        return;
+      }
+      else if (document.getElementById("selectedExercise").children[0] == undefined) {
+        alert("Indique el ejercicio que realiza por favor.");
+      } else {
+        exercici = document.getElementById("selectedExercise").children[0].id;
+      }
+      switch (this.sexo) {
+        case "Hombre":
+          TMB = (10 * this.peso) + (6.25 * this.altura) - (5 * this.edad) + 5;
+          console.log(TMB)
+          break;
+        case "Mujer":
+          TMB = (10 * this.peso) + (6.25 * this.altura) - (5 * this.edad) - 161;
+          console.log(TMB)
+          break;
+      }
+
+      switch (exercici) {
+        case "pocoEjercicio":
+            caloriesNeeded = (TMB * 1.2);
+            break;
+        case "ejercicioLigero":
+            caloriesNeeded = TMB * 1.375;
+            break;
+        case "ejercicioModerado":
+            caloriesNeeded = TMB * 1.55;
+            break;
+        case "ejercicioFuerte":
+            caloriesNeeded = TMB * 1.725;
+            break;
+        case "ejercicioExtremo":
+            caloriesNeeded = TMB * 1.9;
+            break;
+      }
+      if (caloriesNeeded != undefined) {
+        console.log(caloriesNeeded);
+        document.querySelector("#caloriasNecesarias").style.display = 'unset';
+        document.querySelector("#caloriasNecesarias").textContent += caloriesNeeded;
+      }
+    },
     allowDrop: function (ev) {
       ev.preventDefault();
     },
@@ -141,6 +189,7 @@ export default {
       console.log("Alimentos ")
       }
     }
-}
+} 
+
 
 </script>
