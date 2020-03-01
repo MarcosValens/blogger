@@ -18,20 +18,20 @@
               <div>
                 <h5>Selecciona el ejercicio que realizas semanalmente.</h5>
                   <div id="pocoEjercicioDiv" @drop.prevent="drop"  @dragover.prevent="allowDrop">
-                    <img src="../img/pocoEjercicio.png" :draggable="draggable" @dragstart="drag" @dragover.stop id="pocoEjercicio">
+                    <img src="../statics/img/pocoEjercicio.png" :draggable="draggable" @dragstart="drag" @dragover.stop id="pocoEjercicio">
                   </div>
                   <div id="ejercicioLigeroDiv" @drop.prevent="drop"  @dragover.prevent="allowDrop">
-                    <img src="../img/ejercicioLigero.png" :draggable="draggable" @dragstart="drag" @dragover.stop  id="ejercicioLigero">
+                    <img src="../statics/img/ejercicioLigero.png" :draggable="draggable" @dragstart="drag" @dragover.stop  id="ejercicioLigero">
                   </div>
                   <div id="ejercicioModeradoDiv" @drop.prevent="drop"  @dragover.prevent="allowDrop">
-                    <img src="../img/ejercicioModerado.png" :draggable="draggable" @dragstart="drag" @dragover.stop
+                    <img src="../statics/img/ejercicioModerado.png" :draggable="draggable" @dragstart="drag" @dragover.stop
                     id="ejercicioModerado">
                   </div>
                   <div id="ejercicioFuerteDiv" @drop.prevent="drop"  @dragover.prevent="allowDrop">
-                    <img src="../img/ejercicioFuerte.png" :draggable="draggable" @dragstart="drag" @dragover.stop id="ejercicioFuerte">
+                    <img src="../statics/img/ejercicioFuerte.png" :draggable="draggable" @dragstart="drag" @dragover.stop id="ejercicioFuerte">
                   </div>
                   <div id="ejercicioExtremoDiv" @drop.prevent="drop"  @dragover.prevent="allowDrop">
-                    <img src="../img/ejercicioExtremo.png" :draggable="draggable" @dragstart="drag" @dragover.stop id="ejercicioExtremo">
+                    <img src="../statics/img/ejercicioExtremo.png" :draggable="draggable" @dragstart="drag" @dragover.stop id="ejercicioExtremo">
                   </div>
               </div>
               <div id="selectedExercise" @drop.capture="drop"  @dragover.capture="allowDrop" class="col-4">           
@@ -55,8 +55,8 @@
 
 <style scoped>
 #selectedExercise{
-    border: 1px solid #4A7C59;
-    width: 126px;
+    border: 1px solid #1976D2;
+    width: 121px;
     height: 61px;
     margin-top: 7%;
 }
