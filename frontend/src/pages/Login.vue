@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+   <q-page>
     <div>
       <div id="loginTitle">
         <h3>Login</h3>
@@ -12,8 +12,8 @@
           :key="key"
         >{{ error }}</q-banner>
       </div>
-      <div id="loginCard" class="card">
-        <q-card square bordered class="shadow-1">
+      <div id="loginCard" class="row justify-center">
+        <q-card square bordered class="shadow-1" id="card">
           <q-card-section>
             <q-form class="q-gutter-md">
               <q-input square filled clearable v-model="email" type="email" label="email" />
@@ -39,10 +39,8 @@
   color: #1976d2;
 }
 
-.card {
-  margin-left: 38%;
-  margin-top: 5%;
-  height: 10%;
+#card{
+  height: 30%;
   width: 30%;
 }
 

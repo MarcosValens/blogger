@@ -1,64 +1,85 @@
 <template>
     <q-page>
-        <h3>Calculadora de calorias</h3>
-        <div class="card">
-        <q-card square bordered class="shadow-1">
-          <q-card-section>
+        <h3 id="title"> Calculadora de calorias</h3>
+        <div class="row justify-center">
+        <q-card square bordered class="my-card" >
             <q-form class="q-gutter-md">
-              <div id="gender" class="q-gutter-sm">
-                <h5>Indica tu sexo</h5>
-                  <q-radio v-model="sexo" val="Hombre" label="Hombre" />
-                  <q-radio v-model="sexo" val="Mujer" label="Mujer" />
-              </div>  
-              <div class="q-gutter-sm">
-                Peso<q-input v-model.number="peso" type="number" placeholder="Kilos en kg" filled style="max-width: 200px"/>
-                Altura<q-input v-model.number="altura" type="number" placeholder="Altura en cm" filled style="max-width: 200px"/>
-                Edad <q-input v-model.number="edad" type="number" placeholder="Edad en años" filled style="max-width: 200px"/>
-              </div>
-              <div>
-                <h5>Selecciona el ejercicio que realizas semanalmente.</h5>
+              <q-card-section>
+                <div class="text-h5">Indica tu sexo</div>
+                <q-separator inset />
+                <q-radio v-model="sexo" val="Hombre" label="Hombre" />
+                <q-radio v-model="sexo" val="Mujer" label="Mujer" />
+              </q-card-section>
+              <q-card-section>
+              <div class="text-h5">Indica tu peso, altura y edad</div>
+                <q-separator inset />
+                <div class="text-h6" id="subTitleForm">Peso</div>
+                <q-input v-model.number="peso" type="number" placeholder="Peso en kg" filled/>
+                <div class="text-h6" id="subTitleForm">Altura</div>
+                <q-input v-model.number="altura" type="number" placeholder="Altura en cm" filled />
+                <div class="text-h6" id="subTitleForm">Edad</div>
+                <q-input v-model.number="edad" type="number" placeholder="Edad en años" filled />
+              </q-card-section>
+              <q-card-section>
+                <div class="text-h5">Selecciona el ejercicio que realizas semanalmente.</div>
+                <q-separator inset />
                   <div id="pocoEjercicioDiv" @drop.prevent="drop"  @dragover.prevent="allowDrop">
-                    <img src="../statics/img/pocoEjercicio.png" :draggable="draggable" @dragstart="drag" @dragover.stop id="pocoEjercicio">
+                    <img src="../statics/img/pocoEjercicio.png" :draggable="draggable" @dragstart="drag" @dragover.stop  id="pocoEjercicio">
                   </div>
                   <div id="ejercicioLigeroDiv" @drop.prevent="drop"  @dragover.prevent="allowDrop">
-                    <img src="../statics/img/ejercicioLigero.png" :draggable="draggable" @dragstart="drag" @dragover.stop  id="ejercicioLigero">
+                    <img src="../statics/img/ejercicioLigero.png" :draggable="draggable" @dragstart="drag" @dragover.stop  id="pocoEjercicio">
                   </div>
                   <div id="ejercicioModeradoDiv" @drop.prevent="drop"  @dragover.prevent="allowDrop">
                     <img src="../statics/img/ejercicioModerado.png" :draggable="draggable" @dragstart="drag" @dragover.stop id="ejercicioModerado">
                   </div>
                   <div id="ejercicioFuerteDiv" @drop.prevent="drop"  @dragover.prevent="allowDrop">
-                    <img src="../statics/img/ejercicioFuerte.png" :draggable="draggable" @dragstart="drag" @dragover.stop id="ejercicioFuerte">
+                    <img src="../statics/img/ejercicioFuerte.png" :draggable="draggable" @dragstart="drag" @dragover.stop  id="ejercicioFuerte">
                   </div>
                   <div id="ejercicioExtremoDiv" @drop.prevent="drop"  @dragover.prevent="allowDrop">
                     <img src="../statics/img/ejercicioExtremo.png" :draggable="draggable" @dragstart="drag" @dragover.stop id="ejercicioExtremo">
                   </div>
-              </div>
               <div id="selectedExercise" @drop.capture="drop"  @dragover.capture="allowDrop">           
               </div>
-            </q-form>
-            <q-card-actions>
-              <q-btn color="blue" size="lg" class="full-width" label="Submit" @click="calculateTMB" />
+              </q-card-section>
+              <q-card-actions>
+              <q-btn color="blue" label="Calcular Calorias" @click="calculateTMB" />
                <h3 id="caloriasNecesarias" style="display: none">Tus calorías necesarías son las siguientes: </h3>
             </q-card-actions>
-          </q-card-section>
+              </q-form>
         </q-card>
-        <q-card>
-          <h5>Registro de alimentos</h5>
+        <q-card square bordered class="my-card">
+          <q-card-section>
+          <h3>Registro de alimentos</h3>
           <h4> Los alimentos ya añadidos son los siguientes:</h4>
           <div id="taula"></div>
           <q-btn color="blue" size="lg" label="Conseguir Calorias" @click="getAliments"/>
+          </q-card-section>
         </q-card>
         </div>
     </q-page>
 </template>
 
 <style scoped>
-#selectedExercise{
+
+ #title{
+    text-align: center;
+    color: #1976D2; 
+  }
+  .my-card{
+  width: 100%;
+  max-width: 400px;
+  margin-left: 5%;
+  }
+  #selectedExercise{
     border: 1px solid #1976D2;
     width: 121px;
     height: 61px;
     margin-top: 7%;
-}
+  }
+
+  #subTitleForm, #pocoEjercicioDiv{
+  margin: 3% 0%;
+  }
 </style>
 
 <script>
@@ -136,6 +157,7 @@ export default {
       ev.preventDefault();
       let data = ev.dataTransfer.getData("text");
       if (document.getElementById("selectedExercise").childElementCount == 0) {
+          console.log(ev.target);
           ev.target.appendChild(document.getElementById(data));
       } else {
         this.insertAfter(document.getElementById(data), document.getElementById("selectedExercise").lastChild);
@@ -147,6 +169,8 @@ export default {
       }
     },
     insertAfter: function (newNode, referenceNode) {
+      console.log(newNode);
+      console.log(referenceNode);
       referenceNode.parentNode.insertBefore(newNode, referenceNode);
     },
     send(){
