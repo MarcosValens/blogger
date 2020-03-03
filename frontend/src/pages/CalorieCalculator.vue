@@ -52,7 +52,7 @@
           <h3>Registro de alimentos</h3>
           <h4> Los alimentos ya añadidos son los siguientes:</h4>
           <div id="taula"></div>
-          <q-btn label="Conseguir Calorias" @click="getAliments"/>
+          <q-btn label="Conseguir Calorias" @click="getFruitsFromDb"/>
            <p>
              The MobileNet model labeled this as <span id="result">...</span>
             <br />with a confidence of <span id="probability">...</span>.
@@ -102,6 +102,10 @@ export default {
       peso:false,
       ejercicio: "",
       video: "",
+      ready:false,
+      addDisabled:false,
+      db: null,
+      aliments: []
     }
   },
   methods:{
@@ -176,12 +180,149 @@ export default {
     },
     send(){
       console.log("Enviado");
+    },  
+    async addAlimentToDb(aliment){
+      console.log(aliment);
+      return new Promise((resolve, reject) => {
+        let trans = this.db.transaction(['aliment'],'readwrite');
+      	trans.oncomplete = e => {
+        resolve();
+	    };
+      let store = trans.objectStore('aliment');
+      let request = store.put({
+        name: aliment.label,
+        calories: null
+      });
+      });
     },
-    getAliments(){
-      console.log("alimentos")
+ async getFruitsFromDb() {
+    return new Promise((resolve, reject) => {
+
+        let trans = this.db.transaction(['aliment'], 'readonly');
+        trans.oncomplete = e => {
+            resolve(aliments);
+        };
+
+        let store = trans.objectStore('aliment');
+        let aliments = [];
+
+        store.openCursor().onsuccess = e => {
+            let cursor = e.target.result;
+            if (cursor == null) {
+                this.calculateCalories(aliments)
+            } else if (cursor) {
+                aliments.push(cursor.value)
+                cursor.continue();
+            }
+        };
+    });
+},
+      
+async getDb() {
+    return new Promise((resolve, reject) => {
+
+        let request = window.indexedDB.open("aliments", 3);
+
+        request.onerror = e => {
+            console.log('Error opening db', e);
+            reject('Error');
+        };
+
+        request.onsuccess = e => {
+            resolve(e.target.result);
+        };
+
+        request.onupgradeneeded = e => {
+          console.log('onupgradeneeded');
+            let active = e.target.result;
+            let objectStore = active.createObjectStore("aliment", {
+                keyPath: 'name',
+                autoIncrement: true
+            });
+            objectStore.createIndex("name", "name", {
+              unique: true
+            })
+        };
+    });
+},
+async pintar(aliments) {
+
+    let taula = '<table>';
+    taula += '<tr>';
+    taula += '<th>Aliment</th>'
+    taula += '<th>Calories</th>'
+    taula += '</tr>';
+
+    aliments.forEach((aliment) => {
+        taula += '<tr>';
+        taula += '<td>' + aliment.name + '</td>';
+        taula += '<td>' + aliment.calories + '</td>';
+        taula += '</tr>';
+    });
+
+    taula += '</table>';
+    document.querySelector('#taula').innerHTML = taula;
+
+},
+async calculateCalories(aliments) {
+    let allAlimentPromises = [];
+    aliments.forEach(async aliment => {
+        if (aliment.calories == null) {
+            let fetchCalorieAliment = fetch("https://api.edamam.com/api/food-database/parser?ingr=" + aliment.name.toLowerCase() +
+                    "&app_id=73c8bf64&app_key=4c3035a471d4416fd3c62e1a3b02f2d8")
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (myJson) {
+                    aliment.calories = myJson.parsed[0].food.nutrients.ENERC_KCAL;
+                });
+            await allAlimentPromises.push(fetchCalorieAliment)
+        }
+    });
+    Promise.all(allAlimentPromises).then( e => {
+        console.log(aliments);
+        this.pintar(aliments);
+        this.updateAliments(aliments);
+    });
+},
+
+async updateAliments(aliments) {
+
+    return new Promise((resolve, reject) => {
+      let trans = this.db.transaction(['aliment'], 'readwrite');
+       trans.oncomplete = e => {
+            resolve(aliments);
+        };
+
+      let store = trans.objectStore('aliment');
+      store.openCursor().onsuccess = e => {
+        const cursor = e.target.result;
+        if(cursor){
+          this.aliments.forEach((aliment) => {
+            const updateData = cursor.value;
+            if (updateData.name === aliment.name && updateData.calories == null) {
+              updateData.calories = aliment.calories;
+              const request = cursor.update(updateData);
+              request.onsuccess = function() {
+                console.log("Actualizado!");
+              }
+            }
+          });
+          cursor.continue();
+        }
+      }
+    })
     }
+    },
+  async created(){
+    //  IndexedDB
+    this.db = await this.getDb();
+    this.fruits = await this.getFruitsFromDb();
+    this.ready = true;
   },
-  mounted: function(){
+
+  mounted(){
+    // Video
     this.video = document.querySelector("#video");
 
     navigator.mediaDevices.getUserMedia({video:true})
@@ -196,9 +337,13 @@ export default {
     const loop = (classifier) => {
       classifier.classify()
       .then(results => {
-        result.innerHTML = results[0].label;
-         probability.innerText = results[0].confidence.toFixed(4);
-         loop(classifier);
+        results.forEach(result => {
+          if(result.confidence > 0.99){
+            result.innerHTML = result.label;
+            this.addAlimentToDb(result);
+          }
+        });
+        loop(classifier);
       })
     }
   }
