@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+   <q-page>
     <div>
       <div id="loginTitle">
         <h3>Login</h3>
@@ -12,22 +12,19 @@
           :key="key"
         >{{ error }}</q-banner>
       </div>
-      <div id="loginCard" class="card">
-        <q-card square bordered class="shadow-1">
+      <div id="loginCard" class="row justify-center">
+        <q-card square bordered class="shadow-1" id="card">
           <q-card-section>
             <q-form class="q-gutter-md">
               <q-input square filled clearable v-model="email" type="email" label="email" />
               <q-input square filled clearable v-model="password" type="password" label="password" />
             </q-form>
-            <GoogleLogin
-              :params="params"
-              :renderParams="renderParams"
-              :onSuccess="onSuccess"
-              :onFailure="onFailure"
-              filled
-            ></GoogleLogin>
             <q-card-actions>
               <q-btn color="blue" size="lg" class="full-width" label="Login" @click="login" />
+            </q-card-actions>
+            <q-card-actions>
+              <!-- TODO: Remove hardcoded endpoint -->
+              <q-btn color="blue" size="lg" class="full-width" label="Login with google" type="a" href="http://localhost:9999/users/loginGoogle" />
             </q-card-actions>
           </q-card-section>
         </q-card>
@@ -42,10 +39,8 @@
   color: #1976d2;
 }
 
-.card {
-  margin-left: 38%;
-  margin-top: 5%;
-  height: 10%;
+#card{
+  height: 30%;
   width: 30%;
 }
 
@@ -54,7 +49,7 @@
 }
 </style>
 <script>
-import GoogleLogin from "vue-google-login";
+import {openURL} from "quasar";
 const codes = {
   400: "Resource not found",
   401: "Failed to login. Check your credentials",
@@ -64,37 +59,12 @@ export default {
   name: "Login",
   data() {
     return {
-      params: {
-        client_id:
-          "923106540137-eqtlkb3qvhll0bhj65s3a1nv3fs1ev81.apps.googleusercontent.com"
-      },
-      renderParams: {
-        width: 335,
-        height: 55,
-        longtitle: false,
-        theme: "dark"
-      },
       email: "",
       password: "",
       errors: []
     };
   },
-  components: {
-    GoogleLogin
-  },
   methods: {
-    onSuccess(googleUser) {
-      this.errors = [];
-      console.log(googleUser);
-
-      // This only gets the user information: id, name, imageUrl and email
-      console.log(googleUser.getBasicProfile());
-    },
-
-    onFailure(error) {
-      console.log(error);
-    },
-
     login() {
       this.errors = [];
       this.$axios

@@ -19,21 +19,17 @@ export class UserController {
 
     @Get('loginGoogle')
     @Middleware(passport.authenticate('google', {
-        scope: ['email']
+        scope: ['email', 'profile']
     }))
     private async loginGoogle(req: Request, res: Response): Promise<any> {
-
+        res.end();
     }
 
     @Get("loginGoogle/callback")
-    @Middleware(passport.authenticate('google'))
+    @Middleware(passport.authenticate("google"))
     private async loginGoogleCallback(req: Request, res: Response): Promise<any> {
-        const user = req.user;
-
-        const token = jwt.sign(user, "secret", {
-            expiresIn: '1d',
-            subject: user + ""
-        });
-        res.redirect("url/callback?token="+token);
+        const user: any = req.user;
+        const token = user.accessToken;
+        res.redirect('http://localhost:8080/#/blogger?token='+token);
     }
 }
