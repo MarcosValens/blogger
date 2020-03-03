@@ -1,44 +1,30 @@
-//import {connect} from './connectionMysql'
-import {User} from "../model/User"
-import {Request, Response} from 'express'
-import {OK, BAD_REQUEST} from 'http-status-codes'
+//import { connect } from './connectionMysql'
+import { User } from "../model/User"
 
-export async function validate(req: Request, res: Response)/*: Promise<Response>*/ {
-    const userMail = req.params.email;
-    const userPassword = req.params.password;
+export async function validate(email: string, password: string)/*: Promise<Response>*/ {
     //TODO ELEGIR DE QUE MANERA QUEREMOS TRABAJAR, CON ORM (PRIMER EJEMPLO) O CON SIN EL (COMENTADO)
-
-    const user = new User({
-        email: userMail,
-        password: userPassword
+    const user = await User.findOne({
+        where: {
+            email,
+            password
+        }
     });
-    let isValidUser = user.validate().then(err => {
-        console.error(err)
-    }).catch(err => {
-        console.log(err)
-    });
-    if (isValidUser === null) {
-        return res.status(OK).json({
-            message: "User Validated"
-        })
-    } else {
-        return res.status(BAD_REQUEST).json({
-            message: "User mail or password incorrect"
-        })
-    }
-
+    console.log(user);
+    return user;
+    
     //SIN ORM
 
 
-    /*    const conn = await connect();
-        const users = await conn.query('SELECT * FROM user WHERE email = ? AND password = ?', [userMail, userPassword]);
-        if (users[0] !== null) {
-            return res.status(OK).json({
-                message: "User Validated"
-            })
-        } else {
-            return res.status(BAD_REQUEST).json({
-                message: "User mail or password incorrect"
-            })
-        }*/
+    /*const conn = await connect();
+    const query = 'SELECT * FROM user WHERE email = ?';
+    const userFound: any = await conn.query(query, [email]);
+    if (!userFound) {
+        return null;
+    }
+
+    if (!userFound.password) {
+        return userFound;
+    }
+    return userFound.password === password ? userFound : null;*/
+
 }
