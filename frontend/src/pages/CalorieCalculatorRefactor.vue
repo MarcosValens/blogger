@@ -96,7 +96,6 @@ export default {
       altura: false,
       edad: false,
       peso: false,
-      ejercicio: 0,
       tmb: null,
       caloriesNeeded: null,
       ejercicioSeleccionado: null,

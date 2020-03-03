@@ -19,7 +19,7 @@ export async function connect() {
 }*/
 
 import {Sequelize} from 'sequelize-typescript';
-
+import * as path from 'path';
 require('../.env');
 const mysqlHost: string = process.env.MYSQL_HOST;
 const mysqlUser: string = process.env.MYSQL_USER;
@@ -32,5 +32,7 @@ const sequelize = new Sequelize({
     username: mysqlUser,
     password: mysqlPassword,
     storage: ':memory:',
-    modelPaths: [__dirname + '/model']
+    modelPaths: [path.join(__dirname, './../model/*.ts')]
 });
+
+

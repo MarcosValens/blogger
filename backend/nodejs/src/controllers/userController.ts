@@ -2,6 +2,7 @@ import { Controller, Post, Get, Middleware } from '@overnightjs/core';
 import {Request, Response} from 'express';
 import {OK, UNAUTHORIZED} from 'http-status-codes';
 import passport from 'passport';
+import * as userDao from './../dao/userDao';
 import * as jwt from 'jsonwebtoken'
 require("./../config/passport")
 @Controller("users")
@@ -11,6 +12,7 @@ export class UserController {
     public login(req: Request, res: Response): any {
         const email: string = req.body.email;
         const password: string = req.body.password;
+        userDao.validate(email, password).then(console.log).catch(console.log)
         if (email === "test@gmail.com" && password === "123") {
             return res.status(OK).send("Token should go here");
         } 
