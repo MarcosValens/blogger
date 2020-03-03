@@ -5,14 +5,16 @@ import passport from 'passport';
 import * as userDao from './../dao/userDao';
 import * as jwt from 'jsonwebtoken';
 
-require("./../config/passport")
+require("./../config/passport");
 require('./../dao/connectionMysql');
 
 @Controller("users")
 export class UserController {
 
     @Post("login")
+    @Middleware(passport.authenticate("local"))
     public login(req: Request, res: Response): any {
+        /*
         const email: string = req.body.email;
         const password: string = req.body.password;
         userDao.validate(email, password).then(() => {
@@ -20,6 +22,8 @@ export class UserController {
         }).catch ((err) => {
             res.status(UNAUTHORIZED).json({ message: err.message })
         })
+        */
+       res.end();
 
     }
 
