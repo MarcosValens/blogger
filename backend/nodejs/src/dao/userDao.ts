@@ -5,12 +5,20 @@ export async function validate(email: string, password: string)/*: Promise<Respo
     //TODO ELEGIR DE QUE MANERA QUEREMOS TRABAJAR, CON ORM (PRIMER EJEMPLO) O CON SIN EL (COMENTADO)
     const user = await User.findOne({
         where: {
-            email,
-            password
-        }
+            email
+        },
+        attributes: ["username", "email", "password"]
     });
-    console.log(user);
-    return user;
+    if (!user) {
+        throw new Error("User doesn't exist");
+    }
+    if (!user.password) {
+        return true;
+    }
+    
+    if (user.password !== password) {
+        throw new Error("Wrong credentials")
+    }
     
     //SIN ORM
 

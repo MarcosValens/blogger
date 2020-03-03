@@ -20,19 +20,17 @@ export async function connect() {
 
 import {Sequelize} from 'sequelize-typescript';
 import * as path from 'path';
-require('../.env');
+import {User} from './../model/User';
+require('./../config/environment');
 const mysqlHost: string = process.env.MYSQL_HOST;
 const mysqlUser: string = process.env.MYSQL_USER;
 const mysqlPassword: string = process.env.MYSQL_PASSWORD;
 const mysqlUrl: string = process.env.MYSQL_URL;
-
-const sequelize = new Sequelize({
-    database: mysqlUrl,
-    dialect: 'mysql',
-    username: mysqlUser,
-    password: mysqlPassword,
-    storage: ':memory:',
-    modelPaths: [path.join(__dirname, './../model/*.ts')]
-});
+(async () => {
+    const sequelize = new Sequelize(`mysql://${mysqlUser}:${mysqlPassword}@${mysqlHost}/${mysqlUrl}`);
+    sequelize.addModels([User]);
+    await sequelize.sync();
+    await sequelize.authenticate();
+})();
 
 
