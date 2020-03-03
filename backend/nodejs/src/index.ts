@@ -1,7 +1,5 @@
 import BloggerServer from './server';
-
 require('./config/environment');
-
 
 const port: number = parseInt(process.env.PORT) || 3000;
 const mode: string = process.env.MODE ? process.env.MODE : "development";

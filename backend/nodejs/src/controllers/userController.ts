@@ -1,9 +1,13 @@
 import { Controller, Post, Get, Middleware } from '@overnightjs/core';
-import {Request, Response} from 'express';
-import {OK, UNAUTHORIZED} from 'http-status-codes';
+import { Request, Response } from 'express';
+import { OK, UNAUTHORIZED } from 'http-status-codes';
 import passport from 'passport';
-import * as jwt from 'jsonwebtoken'
+import * as userDao from './../dao/userDao';
+import * as jwt from 'jsonwebtoken';
+
 require("./../config/passport")
+require('./../dao/connectionMysql');
+
 @Controller("users")
 export class UserController {
 
@@ -11,10 +15,12 @@ export class UserController {
     public login(req: Request, res: Response): any {
         const email: string = req.body.email;
         const password: string = req.body.password;
-        if (email === "test@gmail.com" && password === "123") {
+        userDao.validate(email, password).then(() => {
             return res.status(OK).send("Token should go here");
-        } 
-        return res.status(UNAUTHORIZED).json({message: "You're not allowed here!"})
+        }).catch ((err) => {
+            res.status(UNAUTHORIZED).json({ message: err.message })
+        })
+
     }
 
     @Get('loginGoogle')
@@ -30,6 +36,6 @@ export class UserController {
     private async loginGoogleCallback(req: Request, res: Response): Promise<any> {
         const user: any = req.user;
         const token = user.accessToken;
-        res.redirect('http://localhost:8080/#/blogger?token='+token);
+        res.redirect('http://localhost:8080/#/blogger?token=' + token);
     }
 }

@@ -1,6 +1,6 @@
 import {Table, Column, Model} from 'sequelize-typescript';
 
-@Table
+@Table({tableName: "user"})
 export class User extends Model<User> {
 
     @Column({primaryKey: true, allowNull: false})
@@ -11,4 +11,6 @@ export class User extends Model<User> {
 
     @Column({allowNull: false})
     password: string;
+
 }
+

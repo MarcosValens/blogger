@@ -68,7 +68,7 @@ export default {
     login() {
       this.errors = [];
       this.$axios
-        .post("http://localhost:9999/users/login", {
+        .post("http://localhost:3000/users/login", {
           email: this.email,
           password: this.password
         })
