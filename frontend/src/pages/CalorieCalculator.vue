@@ -52,7 +52,12 @@
           <h3>Registro de alimentos</h3>
           <h4> Los alimentos ya añadidos son los siguientes:</h4>
           <div id="taula"></div>
-          <q-btn color="blue" size="lg" label="Conseguir Calorias" @click="getAliments"/>
+          <q-btn label="Conseguir Calorias" @click="getAliments"/>
+           <p>
+             The MobileNet model labeled this as <span id="result">...</span>
+            <br />with a confidence of <span id="probability">...</span>.
+            </p>
+            <video id="video" width="640" height="480" autoplay></video>
           </q-card-section>
         </q-card>
         </div>
@@ -82,9 +87,9 @@
   }
 </style>
 
+
 <script>
-import * as ml5 from 'ml5'
-import * as p5 from 'p5'
+import * as ml5 from 'ml5';
 
 export default {
   name: "CalorieCalculator",
@@ -96,6 +101,7 @@ export default {
       edad:false,
       peso:false,
       ejercicio: "",
+      video: "",
     }
   },
   methods:{
@@ -116,11 +122,9 @@ export default {
       switch (this.sexo) {
         case "Hombre":
           TMB = (10 * this.peso) + (6.25 * this.altura) - (5 * this.edad) + 5;
-          console.log(TMB)
           break;
         case "Mujer":
           TMB = (10 * this.peso) + (6.25 * this.altura) - (5 * this.edad) - 161;
-          console.log(TMB)
           break;
       }
 
@@ -142,7 +146,6 @@ export default {
             break;
       }
       if (caloriesNeeded != undefined) {
-        console.log(caloriesNeeded);
         document.querySelector("#caloriasNecesarias").style.display = 'unset';
         document.querySelector("#caloriasNecesarias").textContent += caloriesNeeded;
       }
@@ -169,50 +172,36 @@ export default {
       }
     },
     insertAfter: function (newNode, referenceNode) {
-      console.log(newNode);
-      console.log(referenceNode);
       referenceNode.parentNode.insertBefore(newNode, referenceNode);
     },
     send(){
       console.log("Enviado");
     },
-    preload: function(){
-      let video;
-      const label = "esperando...";
-      let classifier;
-      classifier = ml5.imageClassifier("/statics/modelo/model.json");
-    },
-    setup: function() {
-    createCanvas(640, 520);
-    video = createCapture(VIDEO);
-    video.hide();
-    this.classifyVideo();
-    },
-    classifyVideo: async function() {
-    classifier.classify(video, gotResults);
-    },
-    draw: function() {
-    background(0);
-    image(video, 0, 0);
-    textSize(32);
-    textAlign(CENTER, CENTER);
-    fill(255);
-    text(label, width / 2, height - 16);
-  },
-    gotResults: function(error, results) {
-       if (error) {
-          return;
-        }
-        if (results[0].confidence > 0.99) {
-        label = results[0].label;
-        addFruit(results[0]);
-        }
-        classifyVideo();
-    },
     getAliments(){
-      console.log("Alimentos ")
-      }
+      console.log("alimentos")
     }
+  },
+  mounted: function(){
+    this.video = document.querySelector("#video");
+
+    navigator.mediaDevices.getUserMedia({video:true})
+    .then((stream) => {
+      video.srcObject = stream;
+      video.play()
+    })
+
+    ml5.imageClassifier('/statics/modelo/model.json', video)
+    .then(classifier => loop(classifier))
+
+    const loop = (classifier) => {
+      classifier.classify()
+      .then(results => {
+        result.innerHTML = results[0].label;
+         probability.innerText = results[0].confidence.toFixed(4);
+         loop(classifier);
+      })
+    }
+  }
 } 
 
 
