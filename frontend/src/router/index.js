@@ -2,7 +2,12 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 
 import routes from './routes';
-
+const allowedRoutes = [
+  "/login",
+  "/blogger",
+  "/blogger/create",
+  "/blogger/calorieCalculator"
+]
 Vue.use(VueRouter);
 
 /*
@@ -13,6 +18,20 @@ Vue.use(VueRouter);
  * async/await or return a Promise which resolves
  * with the Router instance.
  */
+
+function checkToken(token) {
+  // TODO: Validate token in java
+  return false;
+}
+
+function doRedirect(callback) {
+  const token = localStorage.getItem("token")
+  if (checkToken(token)) {
+    callback("/blogger");
+  } else {
+    callback("/login");
+  }
+}
 
 export default function (/* { store, ssrContext } */) {
   const Router = new VueRouter({
@@ -26,11 +45,17 @@ export default function (/* { store, ssrContext } */) {
     base: process.env.VUE_ROUTER_BASE,
   });
 
-  Router.beforeEach(({matched}, from, next) => {
-    const [is404] = matched;
-    const {components} = is404;
-    console.log(is404) 
+  Router.beforeEach(({path}, from, next) => {
+    /*
+    if (!allowedRoutes.includes(path)) {
+      return doRedirect(next);
+    }
+    */
     next();
+  });
+
+  Router.afterEach((to, from, done) => {
+    console.log(from)
   })
 
   return Router;
