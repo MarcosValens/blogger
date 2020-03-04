@@ -97,7 +97,7 @@
 
 #subTitleForm,
 #pocoEjercicioDiv {
-  margin: 3% 0%;
+  margin-top: 3%;
 }
 
 #btnCalories,
