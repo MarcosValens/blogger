@@ -132,7 +132,7 @@ Curabitur gravida odio nec laoreet pellentesque. Suspendisse potenti. In ex puru
     }
   },
   created() {
-    const url = "http://172.16.3.75:8080/posts/all";
+    const url = `${process.env.JAVA_ENDPOINT}/all`;
     this.$axios.get(url).then(({ data }) => {
       console.log(data[0]);
       this.posts = data;

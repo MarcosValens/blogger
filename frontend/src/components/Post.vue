@@ -37,12 +37,11 @@ export default {
   },
   methods: {
     remove(id, index) {
-      const url = "http://172.16.3.75:8080/posts/deletePost/";
       // TODO: Make this be a dialog
       const toDelete = confirm("Are you sure you want to delete the post?");
       if (toDelete) {
         this.$axios
-          .get(`${url}${id}`)
+          .get(`${process.env.JAVA_ENDPOINT}/deletePost/${id}`)
           .then(data => {
             this.posts.splice(index, 1);
           })

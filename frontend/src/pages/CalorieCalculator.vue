@@ -287,9 +287,9 @@ export default {
         return aliment;
       }
       let fetchCalorieAliment = fetch(
-        "https://api.edamam.com/api/food-database/parser?ingr=" +
+        `https://api.edamam.com/api/food-database/parser?ingr=" +
           aliment.name.toLowerCase() +
-          "&app_id=73c8bf64&app_key=4c3035a471d4416fd3c62e1a3b02f2d8"
+          "&app_id=73c8bf64&app_key=${process.env.FOOD_API_KEY}`
       )
         .then(function(response) {
           return response.json();

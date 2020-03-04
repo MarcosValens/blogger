@@ -106,7 +106,6 @@
 </style>
 
 <script>
-const URL = `http://server247.cfgs.esliceu.net/bloggeri18n/blogger.php`;
 export default {
   name: "Form",
   props: [],
@@ -135,7 +134,7 @@ export default {
   },
   methods: {
     async loadLanguages(post) {
-      const languages = await fetch(URL, {
+      const languages = await fetch(process.env.ESLICEU_URL, {
         method: "POST",
         body: JSON.stringify({
           MethodName: "languages",
@@ -162,7 +161,7 @@ export default {
       const source = CancelToken.source();
       try {
         const translation = await this.$axios.post(
-          URL,
+          process.env.ESLICEU_URL,
           {
             MethodName: "translate",
             params: {
@@ -211,8 +210,6 @@ user*/
       const published = new Date();
       const url = "";
       const user = "marcosvalens@gmail.com";
-      // TODO: Change this!
-      const javaUrl = "http://172.16.3.75:8080/posts/save";
       const data = {
         title,
         content,
@@ -226,9 +223,9 @@ user*/
       };
       this.errors = [];
       this.$axios
-        .post(`${javaUrl}`, data)
+        .post(`${process.env.JAVA_ENDPOINT}/save`, data)
         .then(err => {
-          this.$router.replace("/blogger/all");
+          this.$router.replace("/blogger");
         })
         .catch(err => {
           this.errors.push(err.response.data);

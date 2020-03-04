@@ -24,7 +24,7 @@
             </q-card-actions>
             <q-card-actions>
               <!-- TODO: Remove hardcoded endpoint -->
-              <q-btn color="blue" size="lg" class="full-width" label="Login with google" type="a" href="http://localhost:9999/users/loginGoogle" />
+              <q-btn color="blue" size="lg" class="full-width" label="Login with google" type="a" :href="google" />
             </q-card-actions>
           </q-card-section>
         </q-card>
@@ -55,21 +55,22 @@ const codes = {
   401: "Failed to login. Check your credentials",
   500: "Server error"
 };
-console.log(process.env)
+
 export default {
   name: "Login",
   data() {
     return {
       email: "",
       password: "",
-      errors: []
+      errors: [],
+      google: `${process.env.NODE_ENDPOINT}/googleLogin`
     };
   },
   methods: {
     login() {
       this.errors = [];
       this.$axios
-        .post("http://172.16.3.75:3000/users/login", {
+        .post(`${process.env.NODE_ENDPOINT}/login`, {
           email: this.email,
           password: this.password
         })
