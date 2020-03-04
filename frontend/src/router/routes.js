@@ -13,6 +13,7 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/Index.vue')},
       { path: 'create', component: () => import('pages/BlogForm.vue')},
+      { path: 'update/:id', component: () => import('pages/BlogForm.vue')},
       { path: 'calorieCalculator', component: () => import('pages/CalorieCalculator.vue')},
     ]
   },

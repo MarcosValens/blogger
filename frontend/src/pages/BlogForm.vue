@@ -12,19 +12,37 @@
           :key="key"
         >{{ error }}</q-banner>
       </div>
-      <div class="card">
-        <q-card square bordered class="shadow-1">
-          <q-card-section>
-            <q-form class="q-gutter-md">
-              <q-input square filled clearable v-model="title" type="text" label="Title" />
-              <q-input square filled clearable v-model="content" type="textarea" label="Content" />
-            </q-form>
-            
-            <q-card-actions>
-              <q-btn color="blue" size="lg" class="full-width" label="Submit" @click="send" />
-            </q-card-actions>
-          </q-card-section>
-        </q-card>
+      <div class="row">
+        <div class="col q-ma-md">
+          <h2>Original content</h2>
+          <q-card square bordered class="shadow-1 ">
+            <q-card-section>
+              <q-form class="q-gutter-md">
+                <q-input square filled clearable v-model="title" type="text" label="Title" />
+                <q-input square filled clearable v-model="content" type="textarea" label="Content" />
+              </q-form>
+
+              <q-card-actions>
+                <q-btn color="blue" size="lg" class="full-width" label="Submit" @click="send" />
+              </q-card-actions>
+            </q-card-section>
+          </q-card>
+        </div>
+        <div class="col q-ma-md">
+          <h2>Traduction</h2>
+          <q-card square bordered class="shadow-1">
+            <q-card-section>
+              <q-form class="q-gutter-md">
+                <q-input square filled clearable v-model="title" type="text" label="Title" />
+                <q-input square filled clearable v-model="content" type="textarea" label="Content" />
+              </q-form>
+
+              <q-card-actions>
+                <q-btn color="blue" size="lg" class="full-width" label="Submit" @click="send" />
+              </q-card-actions>
+            </q-card-section>
+          </q-card>
+        </div>
       </div>
     </div>
   </q-page>
@@ -34,13 +52,6 @@
 .title {
   text-align: center;
   color: #1976d2;
-}
-
-.card {
-  margin-left: 38%;
-  margin-top: 5%;
-  height: 10%;
-  width: 30%;
 }
 
 .q-gutter-md {
@@ -59,7 +70,14 @@ export default {
       content: ""
     };
   },
+  async created() {
+    const idPost = this.$route.params.id;
+    if (idPost !== undefined) {
+      await this.loadPost(idPost);
+    }
+  },
   methods: {
+    async loadPost(id) {},
     send() {
       /*
      idPost, published, url, title, translatedTitle, content,
@@ -90,10 +108,9 @@ user*/
       this.$axios
         .post(`${javaUrl}`, data)
         .then(err => {
-            this.$router.replace("/blogger/all")
+          this.$router.replace("/blogger/all");
         })
         .catch(err => {
-          
           this.errors.push(err.response.data);
         });
     }
