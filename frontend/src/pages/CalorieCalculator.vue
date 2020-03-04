@@ -71,7 +71,9 @@
             <div id="selectedExercise" @drop.capture="drop" @dragover.capture="allowDrop"></div>
           </q-card-section>
           <q-card-actions>
+            <div id="btnTMB">
             <q-btn color="blue" label="Calcular Calorias" @click="calculateTMB" />
+            </div>
             <h3
               id="caloriasNecesarias"
               style="display: none"
@@ -81,10 +83,17 @@
       </q-card>
       <q-card square bordered class="my-card">
         <q-card-section>
-          <h3>Registro de alimentos</h3>
-          <h4>Los alimentos ya añadidos son los siguientes:</h4>
-          <div id="taula"></div>
-          <q-btn color="blue" size="lg" label="Conseguir Calorias" @click="getFruitsFromDb" />
+          <div class="text-h5" id="subTitleForm">Registro de alimentos</div>
+          <video id="video" width="370" height="240" autoplay></video>
+          <div id="btnCalories">
+          <q-btn color="blue" size="lg" label="Conseguir Calorias" @click="getAlimentsFromDb" />
+          </div>
+          <div class="text-h6" id="subTitleForm">Los alimentos ya añadidos son los siguientes:</div>
+          <q-table v-if="aliments && aliments.length > 0"
+            :data="aliments"
+            :columns="columns"
+            row-key="name"
+          />
         </q-card-section>
       </q-card>
     </div>
@@ -112,12 +121,20 @@
 #pocoEjercicioDiv {
   margin: 3% 0%;
 }
+
+#btnCalories, #btnTMB{
+  text-align: center;
+}
 </style>
 
 
 <script>
 import * as ml5 from "ml5";
 import * as p5 from "p5";
+
+const DB_NAME = 'aliments';
+const DB_VERSION = 1;
+const DB_TABLE = 'aliment';
 
 export default {
   name: "CalorieCalculator",
@@ -128,7 +145,22 @@ export default {
       altura: false,
       edad: false,
       peso: false,
-      ejercicio: ""
+      ejercicio: "",
+      db: null,
+      aliments: [],
+      columns: [
+        {
+          name: 'name',
+          required: true,
+          label: 'Nombre del alimento',
+          align: 'left',
+          field: row => row.name,
+          format: val => `${val}`,
+          sortable: true
+        },
+        { name: 'calories', align: 'center', label: 'Calorias', field: 'calories', sortable: true },
+      ],
+      data: []
     };
   },
   methods: {
@@ -238,32 +270,32 @@ export default {
     async addAlimentToDb(aliment){
       console.log(aliment);
       return new Promise((resolve, reject) => {
-        let trans = this.db.transaction(['aliment'],'readwrite');
+        let trans = this.db.transaction([DB_TABLE],'readwrite');
       	trans.oncomplete = e => {
         resolve();
 	    };
-      let store = trans.objectStore('aliment');
+      let store = trans.objectStore(DB_TABLE);
       let request = store.put({
         name: aliment.label,
         calories: null
       });
       });
     },
- async getFruitsFromDb() {
+ async getAlimentsFromDb() {
     return new Promise((resolve, reject) => {
 
-        let trans = this.db.transaction(['aliment'], 'readonly');
+        let trans = this.db.transaction([DB_TABLE], 'readonly');
         trans.oncomplete = e => {
             resolve(aliments);
         };
 
-        let store = trans.objectStore('aliment');
+        let store = trans.objectStore(DB_TABLE);
         let aliments = [];
 
         store.openCursor().onsuccess = e => {
             let cursor = e.target.result;
             if (cursor == null) {
-                this.calculateCalories(aliments)
+                this.calculateCalories(aliments);
             } else if (cursor) {
                 aliments.push(cursor.value)
                 cursor.continue();
@@ -275,7 +307,7 @@ export default {
 async getDb() {
     return new Promise((resolve, reject) => {
 
-        let request = window.indexedDB.open("aliments", 3);
+        let request = window.indexedDB.open(DB_NAME, DB_VERSION);
 
         request.onerror = e => {
             console.log('Error opening db', e);
@@ -289,7 +321,7 @@ async getDb() {
         request.onupgradeneeded = e => {
           console.log('onupgradeneeded');
             let active = e.target.result;
-            let objectStore = active.createObjectStore("aliment", {
+            let objectStore = active.createObjectStore(DB_TABLE, {
                 keyPath: 'name',
                 autoIncrement: true
             });
@@ -299,25 +331,7 @@ async getDb() {
         };
     });
 },
-async pintar(aliments) {
 
-    let taula = '<table>';
-    taula += '<tr>';
-    taula += '<th>Aliment</th>'
-    taula += '<th>Calories</th>'
-    taula += '</tr>';
-
-    aliments.forEach((aliment) => {
-        taula += '<tr>';
-        taula += '<td>' + aliment.name + '</td>';
-        taula += '<td>' + aliment.calories + '</td>';
-        taula += '</tr>';
-    });
-
-    taula += '</table>';
-    document.querySelector('#taula').innerHTML = taula;
-
-},
 async calculateCalories(aliments) {
     let allAlimentPromises = [];
     aliments.forEach(async aliment => {
@@ -334,25 +348,22 @@ async calculateCalories(aliments) {
         }
     });
     Promise.all(allAlimentPromises).then( e => {
-        console.log(aliments);
-        this.pintar(aliments);
         this.updateAliments(aliments);
     });
 },
 
 async updateAliments(aliments) {
-
     return new Promise((resolve, reject) => {
-      let trans = this.db.transaction(['aliment'], 'readwrite');
+      let trans = this.db.transaction([DB_TABLE], 'readwrite');
        trans.oncomplete = e => {
             resolve(aliments);
         };
 
-      let store = trans.objectStore('aliment');
+      let store = trans.objectStore(DB_TABLE);
       store.openCursor().onsuccess = e => {
         const cursor = e.target.result;
         if(cursor){
-          this.aliments.forEach((aliment) => {
+           aliments.forEach((aliment) => {
             const updateData = cursor.value;
             if (updateData.name === aliment.name && updateData.calories == null) {
               updateData.calories = aliment.calories;
@@ -371,7 +382,8 @@ async updateAliments(aliments) {
   async created(){
     //  IndexedDB
     this.db = await this.getDb();
-    this.fruits = await this.getFruitsFromDb();
+    this.aliments = await this.getAlimentsFromDb();
+    console.log(this.aliments);
     this.ready = true;
   },
 
