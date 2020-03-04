@@ -23,61 +23,30 @@
           <q-card-section>
             <div class="text-h5">Selecciona el ejercicio que realizas semanalmente.</div>
             <q-separator inset />
-            <div id="pocoEjercicioDiv" @drop.prevent="drop" @dragover.prevent="allowDrop">
+             <div
+              v-for="(ejercicio, index) in ejercicios"
+              :key="index"
+              @drop.prevent="drop"
+              @dragover.prevent="allowDrop"
+            >
               <img
-                src="../statics/img/pocoEjercicio.png"
+                :src="ejercicio.image"
                 :draggable="draggable"
                 @dragstart="drag"
                 @dragover.stop
-                id="pocoEjercicio"
+                :id="ejercicio.id"
+                :data-increment="ejercicio.increment"
               />
             </div>
-            <div id="ejercicioLigeroDiv" @drop.prevent="drop" @dragover.prevent="allowDrop">
-              <img
-                src="../statics/img/ejercicioLigero.png"
-                :draggable="draggable"
-                @dragstart="drag"
-                @dragover.stop
-                id="pocoEjercicio"
-              />
+            <div id="selectedExercise" @drop.capture="drop" @dragover.capture="allowDrop">
+              <img v-if="ejercicioSeleccionado" :src="ejercicioSeleccionado.img" alt="Ejercicio" />
             </div>
-            <div id="ejercicioModeradoDiv" @drop.prevent="drop" @dragover.prevent="allowDrop">
-              <img
-                src="../statics/img/ejercicioModerado.png"
-                :draggable="draggable"
-                @dragstart="drag"
-                @dragover.stop
-                id="ejercicioModerado"
-              />
-            </div>
-            <div id="ejercicioFuerteDiv" @drop.prevent="drop" @dragover.prevent="allowDrop">
-              <img
-                src="../statics/img/ejercicioFuerte.png"
-                :draggable="draggable"
-                @dragstart="drag"
-                @dragover.stop
-                id="ejercicioFuerte"
-              />
-            </div>
-            <div id="ejercicioExtremoDiv" @drop.prevent="drop" @dragover.prevent="allowDrop">
-              <img
-                src="../statics/img/ejercicioExtremo.png"
-                :draggable="draggable"
-                @dragstart="drag"
-                @dragover.stop
-                id="ejercicioExtremo"
-              />
-            </div>
-            <div id="selectedExercise" @drop.capture="drop" @dragover.capture="allowDrop"></div>
+          </q-card-section>
+          <q-card-section v-if="tmb && caloriesNeeded">
+            <div class="text-h6">Tus calorías necesarías son las siguientes: {{ caloriesNeeded }}</div>
           </q-card-section>
           <q-card-actions>
-            <div id="btnTMB">
             <q-btn color="blue" label="Calcular Calorias" @click="calculateTMB" />
-            </div>
-            <h3
-              id="caloriasNecesarias"
-              style="display: none"
-            >Tus calorías necesarías son las siguientes:</h3>
           </q-card-actions>
         </q-form>
       </q-card>
@@ -136,16 +105,50 @@ const DB_NAME = 'aliments';
 const DB_VERSION = 1;
 const DB_TABLE = 'aliment';
 
+const generos = {
+  Hombre: 5,
+  Mujer: -161
+};
+
 export default {
   name: "CalorieCalculator",
   props: ["draggable"],
   data() {
     return {
-      sexo: "line",
+      sexo: 0,
       altura: false,
       edad: false,
       peso: false,
-      ejercicio: "",
+      tmb: null,
+      caloriesNeeded: null,
+      ejercicioSeleccionado: null,
+      ejercicios: [
+        {
+          image: "../statics/img/pocoEjercicio.png",
+          id: "pocoEjercicioDiv",
+          increment: 1.2
+        },
+        {
+          image: "../statics/img/ejercicioLigero.png",
+          id: "ejercicioLigeroDiv",
+          increment: 1.375
+        },
+        {
+          image: "../statics/img/ejercicioModerado.png",
+          id: "ejercicioModeradoDiv",
+          increment: 1.55
+        },
+        {
+          image: "../statics/img/ejercicioFuerte.png",
+          id: "ejercicioFuerteDiv",
+          increment: 1.725
+        },
+        {
+          image: "../statics/img/ejercicioExtremo.png",
+          id: "ejercicioExtremoDiv",
+          increment: 1.9
+        }
+      ],
       db: null,
       aliments: [],
       columns: [
@@ -164,109 +167,41 @@ export default {
     };
   },
   methods: {
+     getTmb(increment) {
+      return 10 * this.peso + 6.25 * this.altura - 5 * this.edad + increment;
+    },
     calculateTMB: function() {
-      let TMB;
-      let caloriesNeeded;
-      let exercici;
-
-      if (
-        this.sexo == false ||
-        this.edad == false ||
-        this.altura == false ||
-        this.peso == false
-      ) {
-        alert("Por favor, revise sus valores");
-        return;
-      } else if (
-        document.getElementById("selectedExercise").children[0] == undefined
-      ) {
-        alert("Indique el ejercicio que realiza por favor.");
-      } else {
-        exercici = document.getElementById("selectedExercise").children[0].id;
+        if (!this.isValid()) {
+        return alert("Por favor, revise sus valores");
       }
-      switch (this.sexo) {
-        case "Hombre":
-          TMB = 10 * this.peso + 6.25 * this.altura - 5 * this.edad + 5;
-          console.log(TMB);
-          break;
-        case "Mujer":
-          TMB = 10 * this.peso + 6.25 * this.altura - 5 * this.edad - 161;
-          console.log(TMB);
-          break;
-      }
-
-      switch (exercici) {
-        case "pocoEjercicio":
-          caloriesNeeded = TMB * 1.2;
-          break;
-        case "ejercicioLigero":
-          caloriesNeeded = TMB * 1.375;
-          break;
-        case "ejercicioModerado":
-          caloriesNeeded = TMB * 1.55;
-          break;
-        case "ejercicioFuerte":
-          caloriesNeeded = TMB * 1.725;
-          break;
-        case "ejercicioExtremo":
-          caloriesNeeded = TMB * 1.9;
-          break;
-      }
-      if (caloriesNeeded != undefined) {
-        console.log(caloriesNeeded);
-        document.querySelector("#caloriasNecesarias").style.display = "unset";
-        document.querySelector(
-          "#caloriasNecesarias"
-        ).textContent += caloriesNeeded;
-      }
+      this.tmb = this.getTmb(generos[this.sexo]);
+      this.caloriesNeeded = this.tmb * this.ejercicioSeleccionado.increment;
     },
     allowDrop: function(ev) {
       ev.preventDefault();
     },
     drag: function(ev) {
-      ev.dataTransfer.setData("text", ev.target.id);
+      const dataSet = ev.target.dataset;
+      const img = ev.target.src;
+      ev.dataTransfer.setData(
+        "text",
+        JSON.stringify({ increment: dataSet.increment, img })
+      );
     },
     drop: function(ev) {
       ev.preventDefault();
-      let data = ev.dataTransfer.getData("text");
-      if (document.getElementById("selectedExercise").childElementCount == 0) {
-        console.log(ev.target);
-        ev.target.appendChild(document.getElementById(data));
-      } else {
-        this.insertAfter(
-          document.getElementById(data),
-          document.getElementById("selectedExercise").lastChild
-        );
-        document.getElementById(
-          document.getElementById("selectedExercise").firstChild.nextSibling
-            .id + "Div"
-        ).innerHTML = document.getElementById(
-          "selectedExercise"
-        ).firstChild.nextSibling.outerHTML;
-        document
-          .getElementById(
-            document.getElementById("selectedExercise").firstChild.nextSibling
-              .id + "Div"
-          )
-          .firstChild.setAttribute("draggable", "draggable");
-        document
-          .getElementById(
-            document.getElementById("selectedExercise").firstChild.nextSibling
-              .id + "Div"
-          )
-          .firstChild.addEventListener("dragstart", this.drag);
-
-        document
-          .getElementById("selectedExercise")
-          .firstChild.nextSibling.remove();
-      }
+      const { increment, img } = JSON.parse(ev.dataTransfer.getData("text"));
+      this.ejercicioSeleccionado = { increment, img };
     },
-    insertAfter: function (newNode, referenceNode) {
-      referenceNode.parentNode.insertBefore(newNode, referenceNode);
+    isValid() {
+      return (
+        this.sexo &&
+        this.edad &&
+        this.altura &&
+        this.peso &&
+        this.ejercicioSeleccionado
+      );
     },
-    send() {
-      console.log("Enviado");
-    },  
     async addAlimentToDb(aliment){
       console.log(aliment);
       return new Promise((resolve, reject) => {
@@ -319,7 +254,6 @@ async getDb() {
         };
 
         request.onupgradeneeded = e => {
-          console.log('onupgradeneeded');
             let active = e.target.result;
             let objectStore = active.createObjectStore(DB_TABLE, {
                 keyPath: 'name',
