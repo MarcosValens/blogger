@@ -6,11 +6,16 @@ export class User extends Model<User> {
     @Column({primaryKey: true, allowNull: false})
     email: string;
 
-    @Column({allowNull: false, unique: true})
+    @Column({allowNull: true, unique: true})
     username: string;
 
-    @Column({allowNull: false})
+    @Column({allowNull: true})
     password: string;
 
+    @Column({allowNull: false})
+    surname: string;
+
+    @Column({allowNull: false})
+    name: string;
 }
 
