@@ -46,7 +46,7 @@ export class UserController {
     private async loginGoogleCallback(req: Request, res: Response): Promise<any> {
         const user: any = req.user;
         console.log(user);
-        const token = user.accessToken;
+        const token = TokenManager.generateToken(user.profile.email);
         res.redirect(`${get.clientUrl()}/#/blogger?token=${token}`);
     }
 }

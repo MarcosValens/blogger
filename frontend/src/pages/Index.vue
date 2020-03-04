@@ -138,6 +138,12 @@ Curabitur gravida odio nec laoreet pellentesque. Suspendisse potenti. In ex puru
       this.posts = data;
       this.postsCopy = this.posts;
     });
+  },
+  mounted() {
+    const token = this.$router.currentRoute.query.token;
+    if (token) {
+      localStorage.setItem("token", token);
+    }
   }
 };
 </script>

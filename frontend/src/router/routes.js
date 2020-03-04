@@ -1,4 +1,17 @@
 
+function checkToken(token) {
+  // TODO: Validate token in java
+  return true;
+}
+
+function doRedirect(callback) {
+  const token = localStorage.getItem("token")
+  if (checkToken(token)) {
+    callback("/blogger");
+  } else {
+    callback("/login");
+  }
+}
 const routes = [
   {
     path: '/login',
@@ -11,10 +24,10 @@ const routes = [
     path: '/blogger',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Index.vue')},
-      { path: 'create', component: () => import('pages/BlogForm.vue')},
-      { path: 'update/:id', component: () => import('pages/BlogForm.vue')},
-      { path: 'calorieCalculator', component: () => import('pages/CalorieCalculator.vue')},
+      { path: '', component: () => import('pages/Index.vue') },
+      { path: 'create', component: () => import('pages/BlogForm.vue') },
+      { path: 'update/:id', component: () => import('pages/BlogForm.vue') },
+      { path: 'calorieCalculator', component: () => import('pages/CalorieCalculator.vue') },
     ]
   },
 ];
@@ -24,6 +37,9 @@ if (process.env.MODE !== 'ssr') {
   routes.push({
     path: '*',
     component: () => import('pages/Error404.vue'),
+    beforeEnter(to, from, next) {
+      doRedirect(next);
+    }
   });
 }
 
