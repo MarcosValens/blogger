@@ -1,5 +1,6 @@
 import { Controller, Post, Get, Middleware } from '@overnightjs/core';
 import { Request, Response } from 'express';
+import {get} from './../utils';
 import { User } from './../model/User';
 import passport from 'passport';
 import TokenManager from './../managers/tokenManager';
@@ -23,7 +24,7 @@ export class UserController {
         */
         const user: any = req.user;
         const token: string = TokenManager.generateToken(user.dataValues.email);
-        res.end();
+        res.json({token});
     }
 
     @Get('loginGoogle')
