@@ -286,10 +286,9 @@ export default {
       if (aliment.calories) {
         return aliment;
       }
+      const foodUrl = `https://api.edamam.com/api/food-database/parser?ingr=${aliment.name.toLowerCase()}&app_id=73c8bf64&app_key=${process.env.FOOD_API_KEY}`;
       let fetchCalorieAliment = fetch(
-        `https://api.edamam.com/api/food-database/parser?ingr=" +
-          aliment.name.toLowerCase() +
-          "&app_id=73c8bf64&app_key=${process.env.FOOD_API_KEY}`
+        foodUrl
       )
         .then(function(response) {
           return response.json();
