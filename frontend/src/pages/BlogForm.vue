@@ -18,14 +18,31 @@
           <q-card square bordered class="shadow-1">
             <q-card-section>
               <q-form class="q-gutter-md">
-                <q-input square filled clearable v-model="title.original" type="text" label="Title" />
+                <q-input
+                  @input="handleInput(true)"
+                  square
+                  filled
+                  clearable
+                  v-model="title.original"
+                  type="text"
+                  label="Title"
+                />
                 <q-select
                   rounded
                   v-model="dstLanguage"
                   :options="languages"
                   label="Original language"
+                  @change="changeLanguages"
                 />
-                <q-input square filled clearable v-model="content.original" type="textarea" label="Content" />
+                <q-input
+                  @input="handleInput(false)"
+                  square
+                  filled
+                  clearable
+                  v-model="content.original"
+                  type="textarea"
+                  label="Content"
+                />
               </q-form>
 
               <q-card-actions>
@@ -39,14 +56,31 @@
           <q-card square bordered class="shadow-1">
             <q-card-section>
               <q-form class="q-gutter-md">
-                <q-input readonly square filled clearable v-model="title.translated" type="text" label="Title" />
+                <q-input
+                  readonly
+                  square
+                  filled
+                  clearable
+                  v-model="title.translated"
+                  type="text"
+                  label="Title"
+                />
                 <q-select
                   rounded
                   v-model="translatedLanguage"
                   :options="languages"
                   label="Translation language"
+                  @change="changeLanguages"
                 />
-                <q-input readonly square filled clearable v-model="content.translated" type="textarea" label="Content" />
+                <q-input
+                  readonly
+                  square
+                  filled
+                  clearable
+                  v-model="content.translated"
+                  type="textarea"
+                  label="Content"
+                />
               </q-form>
 
               <q-card-actions>
@@ -72,6 +106,7 @@
 </style>
 
 <script>
+const URL = `http://server247.cfgs.esliceu.net/bloggeri18n/blogger.php`;
 export default {
   name: "Form",
   props: [],
@@ -81,6 +116,7 @@ export default {
       dstLanguage: "",
       translatedLanguage: "",
       languages: [],
+      cancel: null,
       title: {
         original: "",
         translated: ""
@@ -99,27 +135,69 @@ export default {
   },
   methods: {
     async loadLanguages(post) {
-      const languages = await fetch(
-        `http://server247.cfgs.esliceu.net/bloggeri18n/blogger.php`,
-        {
-          method: "POST",
-          body: JSON.stringify({
-            MethodName: "languages",
-            params: ""
-          }),
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
-          }
+      const languages = await fetch(URL, {
+        method: "POST",
+        body: JSON.stringify({
+          MethodName: "languages",
+          params: ""
+        }),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
         }
-      ).then(r => r.json());
+      }).then(r => r.json());
       const mapped = languages.map(language => {
-        return {label: language.name, value: language.code}
+        return { label: language.name, value: language.code };
       });
-      return mapped; 
+      return mapped;
     },
     async getPost(id) {
       return null;
     },
+
+    async translate(text) {
+      if (this.cancel) {
+        this.cancel();
+      }
+      const CancelToken = this.$axios.CancelToken;
+      const source = CancelToken.source();
+      try {
+        const translation = await this.$axios.post(
+          URL,
+          {
+            MethodName: "translate",
+            params: {
+              source: this.dstLanguage.value,
+              target: this.translatedLanguage.value,
+              text
+            }
+          },
+          {
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            cancelToken: new CancelToken(token => (this.cancel = token))
+          }
+        );
+        return translation.data;
+
+      } catch(e) {
+        return "";
+      }
+    },
+
+    async handleInput(isTitle) {
+      const textToTranslate = isTitle
+        ? this.title.original
+        : this.content.original;
+      const text = await this.translate(textToTranslate);
+      if (isTitle) {
+        this.title.translated = text;
+      } else {
+        this.content.translated = text;
+      }
+    },
+
+    async changeLanguages() {},
     send() {
       /*
      idPost, published, url, title, translatedTitle, content,
