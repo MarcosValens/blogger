@@ -2,7 +2,7 @@ import { Controller, Post, Get, Middleware } from '@overnightjs/core';
 import { Request, Response } from 'express';
 import { User } from './../model/User';
 import passport from 'passport';
-
+import TokenManager from './../managers/tokenManager';
 require("./../config/passport");
 require('./../dao/connectionMysql');
 
@@ -21,10 +21,9 @@ export class UserController {
             res.status(UNAUTHORIZED).json({ message: err.message })
         })
         */
-       console.log(req);
-       //const user: User = req.user;
-       res.end();
-
+        const user: any = req.user;
+        const token: string = TokenManager.generateToken(user.dataValues.email);
+        res.end();
     }
 
     @Get('loginGoogle')
