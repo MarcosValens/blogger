@@ -15,11 +15,17 @@
       <div class="row">
         <div class="col q-ma-md">
           <h2>Original content</h2>
-          <q-card square bordered class="shadow-1 ">
+          <q-card square bordered class="shadow-1">
             <q-card-section>
               <q-form class="q-gutter-md">
-                <q-input square filled clearable v-model="title" type="text" label="Title" />
-                <q-input square filled clearable v-model="content" type="textarea" label="Content" />
+                <q-input square filled clearable v-model="title.original" type="text" label="Title" />
+                <q-select
+                  rounded
+                  v-model="dstLanguage"
+                  :options="languages"
+                  label="Original language"
+                />
+                <q-input square filled clearable v-model="content.original" type="textarea" label="Content" />
               </q-form>
 
               <q-card-actions>
@@ -33,8 +39,14 @@
           <q-card square bordered class="shadow-1">
             <q-card-section>
               <q-form class="q-gutter-md">
-                <q-input square filled clearable v-model="title" type="text" label="Title" />
-                <q-input square filled clearable v-model="content" type="textarea" label="Content" />
+                <q-input readonly square filled clearable v-model="title.translated" type="text" label="Title" />
+                <q-select
+                  rounded
+                  v-model="translatedLanguage"
+                  :options="languages"
+                  label="Translation language"
+                />
+                <q-input readonly square filled clearable v-model="content.translated" type="textarea" label="Content" />
               </q-form>
 
               <q-card-actions>
@@ -66,18 +78,48 @@ export default {
   data() {
     return {
       errors: [],
-      title: "",
-      content: ""
+      dstLanguage: "",
+      translatedLanguage: "",
+      languages: [],
+      title: {
+        original: "",
+        translated: ""
+      },
+      content: {
+        original: "",
+        translated: ""
+      }
     };
   },
   async created() {
     const idPost = this.$route.params.id;
-    if (idPost !== undefined) {
-      await this.loadPost(idPost);
-    }
+    const post = await this.getPost(idPost);
+    const languages = await this.loadLanguages(post);
+    this.languages = languages;
   },
   methods: {
-    async loadPost(id) {},
+    async loadLanguages(post) {
+      const languages = await fetch(
+        `http://server247.cfgs.esliceu.net/bloggeri18n/blogger.php`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            MethodName: "languages",
+            params: ""
+          }),
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          }
+        }
+      ).then(r => r.json());
+      const mapped = languages.map(language => {
+        return {label: language.name, value: language.code}
+      });
+      return mapped; 
+    },
+    async getPost(id) {
+      return null;
+    },
     send() {
       /*
      idPost, published, url, title, translatedTitle, content,
