@@ -69,7 +69,11 @@ export default {
       this.errors = [];
       console.log(this.email, this.password)
       this.$axios
+<<<<<<< HEAD
         .post("http://172.16.3.75:3000/users/login", {
+=======
+        .post("http://localhost:3000/users/login", {
+>>>>>>> 433f9517247cb2ec92424e39d0676fda86967492
           email: this.email,
           password: this.password
         })

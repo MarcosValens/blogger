@@ -1,30 +1,19 @@
-//import { connect } from './connectionMysql'
 import { User } from "../model/User"
 
-export async function validate(email: string, password: string)/*: Promise<Response>*/ {
-    //TODO ELEGIR DE QUE MANERA QUEREMOS TRABAJAR, CON ORM (PRIMER EJEMPLO) O CON SIN EL (COMENTADO)
+export async function validate(email: string, password: string){
     const user = await User.findOne({
         where: {
-            email,
-            password
-        }
+            email
+        },
+        attributes: ["username", "email", "password"]
     });
-    console.log(user);
-    return user;
-    
-    //SIN ORM
-
-
-    /*const conn = await connect();
-    const query = 'SELECT * FROM user WHERE email = ?';
-    const userFound: any = await conn.query(query, [email]);
-    if (!userFound) {
-        return null;
+    if (!user) {
+        throw new Error("User doesn't exist");
     }
-
-    if (!userFound.password) {
-        return userFound;
+    if (!user.password) {
+        return true;
     }
-    return userFound.password === password ? userFound : null;*/
-
+    if (user.password !== password) {
+        throw new Error("Wrong credentials")
+    }
 }

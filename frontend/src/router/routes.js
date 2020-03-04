@@ -14,7 +14,6 @@ const routes = [
       { path: '', component: () => import('pages/Index.vue')},
       { path: 'create', component: () => import('pages/BlogForm.vue')},
       { path: 'calorieCalculator', component: () => import('pages/CalorieCalculator.vue')},
-      { path: 'calories', component: () => import('pages/CalorieCalculatorRefactor.vue')}
     ]
   },
 ];
