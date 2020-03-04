@@ -5,17 +5,18 @@
       <q-item-label caption>Created at {{ post.createdAt }}</q-item-label>
     </q-item-section>
     <q-item-section>
-      <q-chip 
-        icon="edit" 
-        clickable 
-        label="Edit" 
-        square/>
-      
-      <q-chip icon="delete_forever" 
-        clickable 
-        @click="remove(post.idPost, index)" 
+      <q-btn clickable to="/blogger/create" label="Edit" color="blue" class="q-mb-sm">
+        <q-icon name="edit" />
+      </q-btn>
+
+      <q-btn
+        clickable
+        @click="remove(post.idPost, index)"
         label="Delete"
-        square/>
+        color="red"
+        >
+      <q-icon name="delete_forever" />
+      </q-btn>
     </q-item-section>
   </q-item>
 </template>
