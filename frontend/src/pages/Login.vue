@@ -63,7 +63,7 @@ export default {
       email: "",
       password: "",
       errors: [],
-      google: `${process.env.NODE_ENDPOINT}/googleLogin`
+      google: `${process.env.NODE_ENDPOINT}/loginGoogle`
     };
   },
   methods: {
