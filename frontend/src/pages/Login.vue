@@ -67,13 +67,14 @@ export default {
   methods: {
     login() {
       this.errors = [];
+      console.log(this.email, this.password)
       this.$axios
-        .post("http://localhost:9999/users/login", {
+        .post("http://172.16.3.75:3000/users/login", {
           email: this.email,
           password: this.password
         })
         .then(response => {
-          this.$router.push("/blogger/all");
+          this.$router.push("/blogger");
         })
         .catch(err => {
           if (!err.response) {
