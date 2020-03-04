@@ -55,6 +55,7 @@ const codes = {
   401: "Failed to login. Check your credentials",
   500: "Server error"
 };
+console.log(process.env)
 export default {
   name: "Login",
   data() {
