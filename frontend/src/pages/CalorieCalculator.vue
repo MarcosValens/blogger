@@ -2,7 +2,7 @@
   <q-page>
     <h3 id="title">Calculadora de calorias</h3>
     <div class="row justify-center">
-      <q-card square bordered class="my-card">
+      <q-card square bordered id="card-TMB">
         <q-form class="q-gutter-md">
           <q-card-section>
             <div class="text-h5">Indica tu sexo</div>
@@ -50,7 +50,7 @@
           </q-card-actions>
         </q-form>
       </q-card>
-      <q-card square bordered class="my-card">
+      <q-card square bordered id="card-registro-alimentos">
         <q-card-section>
           <div class="text-h5" id="subTitleForm">Registro de alimentos</div>
           <video id="video" width="370" height="240" autoplay></video>
@@ -59,7 +59,7 @@
           </div>
           <div class="text-h6" id="subTitleForm">Los alimentos ya añadidos son los siguientes:</div>
           <q-table
-            v-if="aliments && aliments.length > 0"
+            v-if="aliments && aliments.length"
             :data="aliments"
             :columns="columns"
             row-key="name"
@@ -75,9 +75,17 @@
   text-align: center;
   color: #1976d2;
 }
-.my-card {
+
+#card-TMB {
   width: 100%;
   max-width: 400px;
+  margin-left: 5%;
+}
+
+#card-registro-alimentos {
+  width: 100%;
+  max-width: 400px;
+  max-height: 700px;
   margin-left: 5%;
 }
 #selectedExercise {
@@ -211,7 +219,6 @@ export default {
       );
     },
     async addAlimentToDb(aliment) {
-      console.log(aliment);
       return new Promise((resolve, reject) => {
         let trans = this.db.transaction([DB_TABLE], "readwrite");
         trans.oncomplete = e => {
@@ -224,7 +231,6 @@ export default {
           name: aliment.label,
           calories: null
         });
-        
       });
     },
     getAlimentsFromDb() {
@@ -335,14 +341,11 @@ export default {
     //  IndexedDB
     this.db = await this.getDb();
     this.aliments = await this.getAlimentsFromDb();
-    console.log(this.aliments);
     this.ready = true;
   },
 
   mounted() {
-    // Video
     this.video = document.querySelector("#video");
-
     navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
       video.srcObject = stream;
       video.play();
