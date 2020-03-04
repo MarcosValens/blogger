@@ -1,9 +1,7 @@
 import { Controller, Post, Get, Middleware } from '@overnightjs/core';
 import { Request, Response } from 'express';
-import { OK, UNAUTHORIZED } from 'http-status-codes';
+import { User } from './../model/User';
 import passport from 'passport';
-import * as userDao from './../dao/userDao';
-import * as jwt from 'jsonwebtoken';
 
 require("./../config/passport");
 require('./../dao/connectionMysql');
@@ -23,6 +21,8 @@ export class UserController {
             res.status(UNAUTHORIZED).json({ message: err.message })
         })
         */
+       console.log(req);
+       //const user: User = req.user;
        res.end();
 
     }
