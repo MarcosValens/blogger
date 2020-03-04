@@ -23,7 +23,7 @@
           <q-card-section>
             <div class="text-h5">Selecciona el ejercicio que realizas semanalmente.</div>
             <q-separator inset />
-             <div
+            <div
               v-for="(ejercicio, index) in ejercicios"
               :key="index"
               @drop.prevent="drop"
@@ -55,10 +55,11 @@
           <div class="text-h5" id="subTitleForm">Registro de alimentos</div>
           <video id="video" width="370" height="240" autoplay></video>
           <div id="btnCalories">
-          <q-btn color="blue" size="lg" label="Conseguir Calorias" @click="getAlimentsFromDb" />
+            <q-btn color="blue" size="lg" label="Conseguir Calorias" @click="getAlimentsFromDb" />
           </div>
           <div class="text-h6" id="subTitleForm">Los alimentos ya añadidos son los siguientes:</div>
-          <q-table v-if="aliments && aliments.length > 0"
+          <q-table
+            v-if="aliments && aliments.length > 0"
             :data="aliments"
             :columns="columns"
             row-key="name"
@@ -91,7 +92,8 @@
   margin: 3% 0%;
 }
 
-#btnCalories, #btnTMB{
+#btnCalories,
+#btnTMB {
   text-align: center;
 }
 </style>
@@ -101,9 +103,9 @@
 import * as ml5 from "ml5";
 import * as p5 from "p5";
 
-const DB_NAME = 'aliments';
+const DB_NAME = "aliments";
 const DB_VERSION = 1;
-const DB_TABLE = 'aliment';
+const DB_TABLE = "aliment";
 
 const generos = {
   Hombre: 5,
@@ -153,25 +155,31 @@ export default {
       aliments: [],
       columns: [
         {
-          name: 'name',
+          name: "name",
           required: true,
-          label: 'Nombre del alimento',
-          align: 'left',
+          label: "Nombre del alimento",
+          align: "left",
           field: row => row.name,
           format: val => `${val}`,
           sortable: true
         },
-        { name: 'calories', align: 'center', label: 'Calorias', field: 'calories', sortable: true },
+        {
+          name: "calories",
+          align: "center",
+          label: "Calorias",
+          field: "calories",
+          sortable: true
+        }
       ],
       data: []
     };
   },
   methods: {
-     getTmb(increment) {
+    getTmb(increment) {
       return 10 * this.peso + 6.25 * this.altura - 5 * this.edad + increment;
     },
     calculateTMB: function() {
-        if (!this.isValid()) {
+      if (!this.isValid()) {
         return alert("Por favor, revise sus valores");
       }
       this.tmb = this.getTmb(generos[this.sexo]);
@@ -202,118 +210,128 @@ export default {
         this.ejercicioSeleccionado
       );
     },
-    async addAlimentToDb(aliment){
+    async addAlimentToDb(aliment) {
       console.log(aliment);
       return new Promise((resolve, reject) => {
-        let trans = this.db.transaction([DB_TABLE],'readwrite');
-      	trans.oncomplete = e => {
-        resolve();
-	    };
-      let store = trans.objectStore(DB_TABLE);
-      let request = store.put({
-        name: aliment.label,
-        calories: null
-      });
+        let trans = this.db.transaction([DB_TABLE], "readwrite");
+        trans.oncomplete = e => {
+          this.updateAliments(this.aliments);
+          resolve();
+        };
+        trans.onerror = reject;
+        let store = trans.objectStore(DB_TABLE);
+        let request = store.put({
+          name: aliment.label,
+          calories: null
+        });
+        
       });
     },
- async getAlimentsFromDb() {
-    return new Promise((resolve, reject) => {
-
-        let trans = this.db.transaction([DB_TABLE], 'readonly');
-        trans.oncomplete = e => {
-            resolve(aliments);
-        };
-
+    getAlimentsFromDb() {
+      return new Promise((resolve, reject) => {
+        let trans = this.db.transaction([DB_TABLE], "readonly");
         let store = trans.objectStore(DB_TABLE);
         let aliments = [];
 
-        store.openCursor().onsuccess = e => {
-            let cursor = e.target.result;
-            if (cursor == null) {
-                this.calculateCalories(aliments);
-            } else if (cursor) {
-                aliments.push(cursor.value)
-                cursor.continue();
-            }
+        trans.oncomplete = e => {
+          resolve(aliments);
+          this.aliments = aliments;
         };
-    });
-},
-      
-async getDb() {
-    return new Promise((resolve, reject) => {
 
+        store.openCursor().onsuccess = e => {
+          let cursor = e.target.result;
+          if (cursor == null) {
+            this.calculateCalories(aliments);
+          } else if (cursor) {
+            aliments.push(cursor.value);
+            cursor.continue();
+          }
+        };
+      });
+    },
+
+    async getDb() {
+      return new Promise((resolve, reject) => {
         let request = window.indexedDB.open(DB_NAME, DB_VERSION);
 
         request.onerror = e => {
-            console.log('Error opening db', e);
-            reject('Error');
+          console.log("Error opening db", e);
+          reject("Error");
         };
 
         request.onsuccess = e => {
-            resolve(e.target.result);
+          resolve(e.target.result);
         };
 
         request.onupgradeneeded = e => {
-            let active = e.target.result;
-            let objectStore = active.createObjectStore(DB_TABLE, {
-                keyPath: 'name',
-                autoIncrement: true
-            });
-            objectStore.createIndex("name", "name", {
-              unique: true
-            })
-        };
-    });
-},
-
-async calculateCalories(aliments) {
-    let allAlimentPromises = [];
-    aliments.forEach(async aliment => {
-        if (aliment.calories == null) {
-            let fetchCalorieAliment = fetch("https://api.edamam.com/api/food-database/parser?ingr=" + aliment.name.toLowerCase() +
-                    "&app_id=73c8bf64&app_key=4c3035a471d4416fd3c62e1a3b02f2d8")
-                .then(function (response) {
-                    return response.json();
-                })
-                .then(function (myJson) {
-                    aliment.calories = myJson.parsed[0].food.nutrients.ENERC_KCAL;
-                });
-            await allAlimentPromises.push(fetchCalorieAliment)
-        }
-    });
-    Promise.all(allAlimentPromises).then( e => {
-        this.updateAliments(aliments);
-    });
-},
-
-async updateAliments(aliments) {
-    return new Promise((resolve, reject) => {
-      let trans = this.db.transaction([DB_TABLE], 'readwrite');
-       trans.oncomplete = e => {
-            resolve(aliments);
-        };
-
-      let store = trans.objectStore(DB_TABLE);
-      store.openCursor().onsuccess = e => {
-        const cursor = e.target.result;
-        if(cursor){
-           aliments.forEach((aliment) => {
-            const updateData = cursor.value;
-            if (updateData.name === aliment.name && updateData.calories == null) {
-              updateData.calories = aliment.calories;
-              const request = cursor.update(updateData);
-              request.onsuccess = function() {
-                console.log("Actualizado!");
-              }
-            }
+          let active = e.target.result;
+          let objectStore = active.createObjectStore(DB_TABLE, {
+            keyPath: "name",
+            autoIncrement: true
           });
-          cursor.continue();
-        }
-      }
-    })
-    }
+          objectStore.createIndex("name", "name", {
+            unique: true
+          });
+        };
+      });
     },
-  async created(){
+
+    async getCalories(aliment) {
+      if (aliment.calories) {
+        return aliment;
+      }
+      let fetchCalorieAliment = fetch(
+        "https://api.edamam.com/api/food-database/parser?ingr=" +
+          aliment.name.toLowerCase() +
+          "&app_id=73c8bf64&app_key=4c3035a471d4416fd3c62e1a3b02f2d8"
+      )
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(myJson) {
+          aliment.calories = myJson.parsed[0].food.nutrients.ENERC_KCAL;
+        });
+      return fetchCalorieAliment;
+    },
+
+    async calculateCalories(aliments) {
+      let allAlimentPromises = aliments.map(this.getCalories);
+      Promise.all(allAlimentPromises).then(e => {
+        this.updateAliments(aliments);
+      });
+    },
+
+    async updateAliments(aliments) {
+      return new Promise((resolve, reject) => {
+        let trans = this.db.transaction([DB_TABLE], "readwrite");
+        trans.oncomplete = e => {
+          resolve(aliments);
+        };
+
+        let store = trans.objectStore(DB_TABLE);
+        store.openCursor().onsuccess = e => {
+          const cursor = e.target.result;
+          if (cursor) {
+            aliments.forEach(aliment => {
+              const updateData = cursor.value;
+              if (
+                updateData.name === aliment.name &&
+                updateData.calories == null
+              ) {
+                updateData.calories = aliment.calories;
+                const request = cursor.update(updateData);
+                request.onsuccess = function() {
+                  console.log("Actualizado!");
+                };
+              }
+            });
+            cursor.continue();
+          }
+        };
+      });
+    }
+  },
+  async created() {
     //  IndexedDB
     this.db = await this.getDb();
     this.aliments = await this.getAlimentsFromDb();
@@ -321,33 +339,30 @@ async updateAliments(aliments) {
     this.ready = true;
   },
 
-  mounted(){
+  mounted() {
     // Video
     this.video = document.querySelector("#video");
 
-    navigator.mediaDevices.getUserMedia({video:true})
-    .then((stream) => {
+    navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
       video.srcObject = stream;
-      video.play()
-    })
+      video.play();
+    });
 
-    ml5.imageClassifier('/statics/modelo/model.json', video)
-    .then(classifier => loop(classifier))
+    ml5
+      .imageClassifier("/statics/modelo/model.json", video)
+      .then(classifier => loop(classifier));
 
-    const loop = (classifier) => {
-      classifier.classify()
-      .then(results => {
-        results.forEach(result => {
-          if(result.confidence > 0.99){
-            result.innerHTML = result.label;
-            this.addAlimentToDb(result);
+    const loop = classifier => {
+      classifier.classify().then(async results => {
+        const promises = results.map(result => {
+          if (result.confidence > 0.99) {
+            return this.addAlimentToDb(result);
           }
         });
+        await Promise.all(promises);
         loop(classifier);
-      })
-    }
+      });
+    };
   }
-} 
-
-
+};
 </script>
