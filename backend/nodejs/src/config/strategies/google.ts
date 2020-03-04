@@ -11,7 +11,7 @@ const options: googleStrategy.StrategyOptionsWithRequest = {
 
 function callback(request, accessToken, refreshToken, profile, done) {
     // Comprobar usuarios aqui?
-    done(null, {accessToken, refreshToken});
+    done(null, {profile});
 }
 
 export const Google = (() => new GoogleStrategy(options, callback))();

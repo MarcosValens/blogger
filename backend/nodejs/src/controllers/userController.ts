@@ -24,7 +24,13 @@ export class UserController {
         */
         const user: any = req.user;
         const token: string = TokenManager.generateToken(user.dataValues.email);
-        res.json({token});
+        res.redirect(`sendToken?token=${token}`);
+    }
+
+    @Get("sendToken")
+    public sendToken(req: Request, res: Response): any {
+        const token: string = req.query.token;
+        res.json({token})
     }
 
     @Get('loginGoogle')
@@ -39,7 +45,8 @@ export class UserController {
     @Middleware(passport.authenticate("google"))
     private async loginGoogleCallback(req: Request, res: Response): Promise<any> {
         const user: any = req.user;
+        console.log(user);
         const token = user.accessToken;
-        res.redirect('http://localhost:8080/#/blogger?token=' + token);
+        res.redirect(`${get.clientUrl()}/#/blogger?token=${token}`);
     }
 }

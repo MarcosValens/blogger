@@ -51,7 +51,7 @@
 <script>
 import {openURL} from "quasar";
 const codes = {
-  400: "Resource not found",
+  400: "It looks like you forgot something",
   401: "Failed to login. Check your credentials",
   500: "Server error"
 };
@@ -75,7 +75,10 @@ export default {
           password: this.password
         })
         .then(response => {
-          this.$router.push("/blogger");
+          const token = response.data.token;
+          
+          localStorage.setItem("token",token)
+          this.$router.push(`/blogger`);
         })
         .catch(err => {
           if (!err.response) {
@@ -84,8 +87,7 @@ export default {
             this.errors.push(codes[err.response.status]);
           }
         });
-    },
-    _perform(token) {}
+    }
   }
 };
 </script>
