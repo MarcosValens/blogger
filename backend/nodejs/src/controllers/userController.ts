@@ -4,9 +4,10 @@ import {get} from './../utils';
 import { User } from './../model/User';
 import passport from 'passport';
 import TokenManager from './../managers/tokenManager';
+import { UserService } from './../service/userService';
 require("./../config/passport");
 require('./../dao/connectionMysql');
-
+const userService: UserService = new UserService();
 @Controller("users")
 export class UserController {
 
@@ -45,8 +46,9 @@ export class UserController {
     @Middleware(passport.authenticate("google"))
     private async loginGoogleCallback(req: Request, res: Response): Promise<any> {
         const user: any = req.user;
-        console.log(user);
-        const token = TokenManager.generateToken(user.profile.email);
+        console.log(user.profile);
+        await userService.isValidate(user.profile.email, user.profile.given_name, user.profile.family_name);
+        const token = user.accessToken;
         res.redirect(`${get.clientUrl()}/#/blogger?token=${token}`);
     }
 }

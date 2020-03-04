@@ -11,7 +11,6 @@ const options: googleStrategy.StrategyOptionsWithRequest = {
 };
 
 function callback(request, accessToken, refreshToken, profile, done) {
-
     done(null, {profile});
 }
 
