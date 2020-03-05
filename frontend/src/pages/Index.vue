@@ -134,9 +134,10 @@ Curabitur gravida odio nec laoreet pellentesque. Suspendisse potenti. In ex puru
   created() {
     const url = `${process.env.JAVA_ENDPOINT}/all`;
     this.$axios.get(url).then(({ data }) => {
-      console.log(data[0]);
       this.posts = data;
       this.postsCopy = this.posts;
+    }).catch(error => {
+      console.log(error);
     });
   },
   mounted() {
