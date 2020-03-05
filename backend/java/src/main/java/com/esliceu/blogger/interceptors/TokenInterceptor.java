@@ -24,8 +24,8 @@ public class TokenInterceptor implements HandlerInterceptor {
 
             if (auth != null && !auth.isEmpty()) {
                 String token = auth.replace("Bearer ", "");
-                Claims valid =  tokenManager.validateToken(token);
-                if (valid == null){
+                Boolean valid =  tokenManager.validateToken(token);
+                if (valid){
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     return false;
                 } else {
