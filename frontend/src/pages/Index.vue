@@ -1,17 +1,16 @@
 <template>
   <q-page class>
-    <q-drawer show-if-above side="left" bordered>
-      <!-- drawer content -->
-      <q-input label="Search" v-model="text" @input="filterPosts" class="q-ma-sm" />
-      <q-scroll-area class="fit">
-        <q-list v-for="(post, index) in postsCopy" :key="post.idPost">
-          <Post :post="post" :index="index" @click.native="setPost(post)" class="q-ma-sm" />
-          <q-separator />
-        </q-list>
-      </q-scroll-area>
-    </q-drawer>
-    <div>
-      <div class="text-center">
+    <div class="row">
+      <div class="col-4">
+        <q-input label="Search" v-model="text" @input="filterPosts" class="q-ma-sm" />
+        <q-scroll-area class="fit">
+          <q-list v-for="(post, index) in postsCopy" :key="post.idPost">
+            <Post :post="post" :index="index" @click.native="setPost(post)" class="q-ma-sm" />
+            <q-separator />
+          </q-list>
+        </q-scroll-area>
+      </div>
+      <div class="col-8 text-center">
         <div v-if="!postsCopy.length">
           <h2>
             No posts available
@@ -133,12 +132,15 @@ Curabitur gravida odio nec laoreet pellentesque. Suspendisse potenti. In ex puru
   },
   created() {
     const url = `${process.env.JAVA_ENDPOINT}/all`;
-    this.$axios.get(url).then(({ data }) => {
-      this.posts = data;
-      this.postsCopy = this.posts;
-    }).catch(error => {
-      console.log(error);
-    });
+    this.$axios
+      .get(url)
+      .then(({ data }) => {
+        this.posts = data;
+        this.postsCopy = this.posts;
+      })
+      .catch(error => {
+        console.log(error);
+      });
   },
   mounted() {
     const token = this.$router.currentRoute.query.token;
