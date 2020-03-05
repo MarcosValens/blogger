@@ -12,7 +12,7 @@ import java.util.Date;
 public class TokenManager {
 
     @Autowired
-    JwtProperties jwtProperties;
+    private JwtProperties jwtProperties;
 
     public Claims getClaims(String token) {
         try{
