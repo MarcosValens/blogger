@@ -6,6 +6,8 @@ import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 public class TokenManager {
 
@@ -13,19 +15,19 @@ public class TokenManager {
     JwtProperties jwtProperties;
 
     public Claims getClaims(String token) {
-        return Jwts.parser().setSigningKey(jwtProperties.getJwtKey()).parseClaimsJws(token).getBody();
+        try{
+            return Jwts.parser().setSigningKey(jwtProperties.getJwtKey()).parseClaimsJws(token).getBody();
+        } catch (Exception e){
+
+        }
     }
 
     public Boolean validateToken(String token) {
-        try {
-            Claims claims = Jwts
-                    .parser()
-                    .setSigningKey(jwtProperties.getJwtKey())
-                    .parseClaimsJws(token)
-                    .getBody();
-            return claims != null;
-        } catch (Exception e) {
-            return false;
-        }
+        Claims claims = getClaims(token);
+        Date expirationToken = claims.getExpiration();
+        Date date = new Date();
+        return date.before(expirationToken);
     }
 }
+
+
