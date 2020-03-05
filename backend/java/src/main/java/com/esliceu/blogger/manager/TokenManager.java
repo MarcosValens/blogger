@@ -18,7 +18,7 @@ public class TokenManager {
         try{
             return Jwts.parser().setSigningKey(jwtProperties.getJwtKey()).parseClaimsJws(token).getBody();
         } catch (Exception e){
-
+            return null;
         }
     }
 
