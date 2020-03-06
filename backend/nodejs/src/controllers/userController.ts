@@ -1,28 +1,20 @@
-import { Controller, Post, Get, Middleware } from '@overnightjs/core';
-import { Request, Response } from 'express';
-import {get} from './../utils';
-import { User } from './../model/User';
+import {Controller, Post, Get, Middleware} from '@overnightjs/core';
+import {Request, Response} from 'express';
+import {get} from '../utils';
 import passport from 'passport';
 import TokenManager from './../managers/tokenManager';
-import { UserService } from './../service/userService';
+import {UserService} from '../service/userService';
+
 require("./../config/passport");
 require('./../dao/connectionMysql');
 const userService: UserService = new UserService();
+
 @Controller("users")
 export class UserController {
 
     @Post("login")
     @Middleware(passport.authenticate("local"))
     public login(req: Request, res: Response): any {
-        /*
-        const email: string = req.body.email;
-        const password: string = req.body.password;
-        userDao.validate(email, password).then(() => {
-            return res.status(OK).send("Token should go here");
-        }).catch ((err) => {
-            res.status(UNAUTHORIZED).json({ message: err.message })
-        })
-        */
         const user: any = req.user;
         const token: string = TokenManager.generateToken(user.dataValues.email);
         res.json({token});
