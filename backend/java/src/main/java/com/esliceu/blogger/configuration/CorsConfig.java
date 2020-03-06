@@ -7,9 +7,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-
-import java.util.Properties;
 
 @Configuration
 @EnableWebMvc
@@ -21,11 +18,15 @@ public class CorsConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry corsRegistry){
-        System.out.println(origin);
         corsRegistry.addMapping("/**")
+                .allowCredentials(true)
                 .allowedOrigins(origin)
-                .maxAge(System.currentTimeMillis() + (3600 * 1000))
                 .allowedMethods("GET","POST","PUT","DELETE","OPTIONS");
+        /*
+
+                .allowedHeaders("Authorization", "Origin", "X-Requested-With", "Content-Type",
+                        "Accept", "Sec-Fetch-Dest", "Referer", "User-Agent")
+         */
 
 
     }

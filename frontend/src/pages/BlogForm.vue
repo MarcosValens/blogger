@@ -187,6 +187,9 @@ export default {
       const textToTranslate = isTitle
         ? this.title.original
         : this.content.original;
+      if (!this.dstLanguage.value || !this.translatedLanguage.value) {
+        return textToTranslate;
+      }
       const text = await this.translate(textToTranslate);
       if (isTitle) {
         this.title.translated = text;

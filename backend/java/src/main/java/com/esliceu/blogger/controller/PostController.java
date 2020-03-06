@@ -54,7 +54,12 @@ public class PostController {
         User user = userManager.findByEmailOrUsername(email, email);
 
         JsonObject convertedObject = new Gson().fromJson(postJson, JsonObject.class);
-        Long postId = convertedObject.get("idPost").getAsLong();
+        Long postId = null;
+        try {
+            postId = convertedObject.get("idPost").getAsLong();
+        } catch(Exception e) {
+            // Do nothing
+        }
         Post post;
         if (postId != null) {
             post = postManager.getPostById(postId);

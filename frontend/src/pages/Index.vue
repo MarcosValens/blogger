@@ -64,7 +64,10 @@ export default {
   created() {
     const url = `${process.env.JAVA_ENDPOINT}/all`;
     this.$axios
-      .get(url)
+      .get(url, {
+        withCredentials: true,
+        
+      })
       .then(({ data }) => {
         this.posts = data;
         this.postsCopy = this.posts;
