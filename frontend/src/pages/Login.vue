@@ -66,6 +66,10 @@ export default {
       google: `${process.env.NODE_ENDPOINT}/loginGoogle`
     };
   },
+  mounted() {
+    console.log("Clearing token");
+    localStorage.clear();
+  },
   methods: {
     login() {
       this.errors = [];

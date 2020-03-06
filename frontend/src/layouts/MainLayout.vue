@@ -11,14 +11,19 @@
       </q-toolbar>
     </q-header>
 
-    <q-page-container>
-      <router-view />
+    <q-page-container >
+      <router-view/>
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
 export default {
-  name: "MainLayout"
+  name: "MainLayout",
+  methods: {
+    check() {
+      console.log("Loaded")
+    }
+  }
 };
 </script>
