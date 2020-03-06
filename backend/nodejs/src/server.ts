@@ -11,7 +11,7 @@ export default class BloggerServer extends Server {
         this.app.use(bodyParser.urlencoded({ extended: true }));
 
         const options: cors.CorsOptions = {
-            origin: whitelist,
+            origin: '*',
             credentials: true,
             allowedHeaders: "Authorization, Origin, X-Requested-With, Content-Type, Accept",
             methods: "GET, POST, PUT, DELETE, OPTIONS",

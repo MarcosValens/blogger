@@ -35,6 +35,9 @@
                   label="Original language"
                   @change="changeLanguages"
                 />
+                <q-btn round color="primary" icon="mic" @click="startRecordingAudio()"/>
+                <q-btn round v-if="recording" color="primary" icon="stop" id="stopRecording"/>
+
                 <q-input
                   @input="handleInput(false)"
                   square
@@ -125,7 +128,9 @@ export default {
       content: {
         original: "",
         translated: ""
-      }
+      },
+      recording: "",
+      chunks: []
     };
   },
   async created() {
@@ -262,7 +267,62 @@ export default {
         .catch(err => {
           this.errors.push(err.response.data);
         });
-    }
+    },
+     async startRecordingAudio(){
+       console.log("Grabando...");
+       this.recording = true;
+       let userMedia = navigator.mediaDevices.getUserMedia({
+         audio: true,
+         video: false
+       });
+
+       userMedia.then((mediaStream) => {
+         console.log(mediaStream);
+         let mediaRecorder = new MediaRecorder(mediaStream);
+         mediaRecorder.start();
+
+         document.querySelector("#stopRecording").onclick = () => {
+            mediaRecorder.stop();
+         }
+
+         mediaRecorder.onstop = async () =>{
+            let audio = document.createElement('audio');
+            audio.controls = true;
+            const blob = new Blob(this.chunks, {
+              'type': 'audio/ogg; codecs=opus'
+            });
+
+            let formData = new FormData();
+
+            formData.append("arxiu", blob);
+            formData.append("MethodName", "transcribe_sync");
+            formData.append("params", "{}");
+
+            let audioTranscripcion = await fetch("http://server247.cfgs.esliceu.net/bloggeri18n/blogger.php", {
+              method: "POST",
+              body: formData
+            });
+            let audioTranscripcionJSON = await audioTranscripcion.json();
+            console.log(audioTranscripcionJSON);
+
+            if(audioTranscripcionJSON[0].confianca > 0.7){
+              alert("Traduccion por voz realizada.");
+              //TODO meter el texto en el textarera
+              this.translate(audioTranscripcionJSON[0].transcripcio);
+            }
+         },
+
+          mediaRecorder.ondataavailable = e => {
+            console.log(e);
+            this.chunks.push(e.data);
+          }
+
+          console.log(mediaRecorder);
+       }),
+       userMedia.catch(function (err) {
+         console.log(err.name);
+       });
+     },
   }
 };
 </script>
