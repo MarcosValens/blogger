@@ -178,8 +178,7 @@ export default {
           }
         );
         return translation.data;
-
-      } catch(e) {
+      } catch (e) {
         return "";
       }
     },
@@ -202,26 +201,25 @@ export default {
      idPost, published, url, title, translatedTitle, content,
       translatedTitle, originalLanguage, translatedLanguage
 user*/
-      const { title, content } = this;
-      const translatedContent = content;
-      const translatedLanguage = "es";
-      const translatedTitle = title;
-      const originalLanguage = translatedLanguage;
-      const published = new Date();
-      const url = "";
-      const user = "marcosvalens@gmail.com";
+      const title = this.title.original;
+      const content = this.content.original;
+      const originalLanguage = this.dstLanguage.value;
+
+      const translatedTitle = this.title.translated;
+      const translatedContent = this.content.translated;
+      const translatedLanguage = this.translatedLanguage.value;
+
       const data = {
         title,
         content,
         translatedContent,
         translatedLanguage,
         translatedTitle,
-        originalLanguage,
-        published,
-        url,
-        user
+        originalLanguage
       };
+      console.log(data);
       this.errors = [];
+
       this.$axios
         .post(`${process.env.JAVA_ENDPOINT}/save`, data)
         .then(err => {

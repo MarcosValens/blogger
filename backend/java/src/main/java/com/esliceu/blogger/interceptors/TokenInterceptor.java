@@ -19,19 +19,20 @@ public class TokenInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         try {
-            System.out.println("Entra preHandle");
             String auth = request.getHeader("Authorization");
 
-            if (auth != null && !auth.isEmpty()) {
-                String token = auth.replace("Bearer ", "");
-                Boolean valid =  tokenManager.validateToken(token);
-                if (valid){
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    return false;
-                } else {
-                    response.setStatus(HttpServletResponse.SC_OK);
-                }
+            if (auth == null || auth.isEmpty()) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                return false;
             }
+
+            String token = auth.replace("Bearer ", "");
+            Boolean valid =  tokenManager.validateToken(token);
+            if (!valid){
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return false;
+            }
+            response.setStatus(HttpServletResponse.SC_OK);
             return true;
         } catch (JwtException e){
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);

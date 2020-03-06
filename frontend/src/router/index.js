@@ -13,15 +13,21 @@ let allowedRoutes;
  * with the Router instance.
  */
 
-function checkToken(token) {
-  // TODO: Validate token in java
-  return token;
-}
 
 function isAllowedRoute(to, from) {
   return !allowedRoutes.includes(from.path) && allowedRoutes.includes(to.path) ||
     allowedRoutes.includes(to.path) || to.params.id;
 }
+
+
+
+/*
+
+function checkToken(token) {
+  // TODO: Validate token in java
+  return token;
+}
+
 
 function getBackward(to, from) {
   return allowedRoutes.includes(to.path) ? to : allowedRoutes.includes(from.path) ? from : "/blogger";
@@ -41,6 +47,7 @@ function getNextPath(to, token) {
   if (!checkToken(token) && to.includes("blogger")) return "/login";
   return null;
 }
+*/
 
 function getRoutes(routes, nextRoute) {
   if (nextRoute.path === "*") return routes;
@@ -55,10 +62,12 @@ function getRoutes(routes, nextRoute) {
   return routes.concat(formattedRoutes);
 }
 
+/*
 function getToken(to) {
   const token = to.query.token || localStorage.getItem("token") || null;
   return token;
 }
+*/
 
 export default function (/* { store, ssrContext } */) {
   const Router = new VueRouter({
@@ -74,13 +83,11 @@ export default function (/* { store, ssrContext } */) {
   allowedRoutes = Router.options.routes.reduce(getRoutes, []);
 
   Router.beforeEach((to, from, next) => {
-    const token = getToken(to);
 
     if (!isAllowedRoute(to, from)) {
-      return doRedirect({ to, from, callback: next, token });
+      return next("/blogger")
     }
-    const nextPath = getNextPath(to.path, token);
-    nextPath ? next(nextPath) : next();
+    next();
   });
 
   return Router;
