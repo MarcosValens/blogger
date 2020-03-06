@@ -3,9 +3,12 @@ package com.esliceu.blogger.manager;
 import com.esliceu.blogger.configuration.JwtProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.spec.SecretKeySpec;
+import java.security.Key;
 import java.util.Date;
 
 @Service
@@ -16,7 +19,13 @@ public class TokenManager {
 
     public Claims getClaims(String token) {
         try{
-            return Jwts.parser().setSigningKey(jwtProperties.getJwtKey()).parseClaimsJws(token).getBody();
+            SignatureAlgorithm algorithm = SignatureAlgorithm.HS256;
+
+            Key signingKey = new SecretKeySpec(jwtProperties.getJwtKey().getBytes(), algorithm.getJcaName());
+            return Jwts.parser()
+                    .setSigningKey(signingKey)
+                    .parseClaimsJws(token)
+                    .getBody();
         } catch (Exception e){
             return null;
         }

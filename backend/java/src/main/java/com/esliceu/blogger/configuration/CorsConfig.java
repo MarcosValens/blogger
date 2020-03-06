@@ -1,5 +1,6 @@
 package com.esliceu.blogger.configuration;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -14,11 +15,14 @@ import java.util.Properties;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class CorsConfig implements WebMvcConfigurer {
 
+    @Value("${url.development}")
+    private String origin;
+
     public void addCorsMappings(CorsRegistry corsRegistry){
         Properties properties = new Properties();
         corsRegistry.addMapping("/**")
                 .allowCredentials(true)
-                .allowedOrigins("http://localhost:8080","172.16.7.38:8080")
+                .allowedOrigins(origin)
                 .allowedMethods("GET","POST","PUT","DELETE","OPTIONS");
     }
 }

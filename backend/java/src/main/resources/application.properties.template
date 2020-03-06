@@ -4,7 +4,7 @@ spring.datasource.driver-class-name=
 
 #Url donde esta el servicio de tu mysql y el nombre de la base de datos
 spring.datasource.url=
-
+spring.main.allow-bean-definition-overriding=true
 #Usuario y contrasena para tu base de datos descrita en la linea anterior
 spring.datasource.username=
 spring.datasource.password=

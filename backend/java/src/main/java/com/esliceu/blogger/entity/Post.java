@@ -10,7 +10,7 @@ public class Post {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long idPost;
+    private Long idPost;
 
     @Column(name = "published")
     private LocalDateTime published;
@@ -46,7 +46,7 @@ public class Post {
     public Post() {
     }
 
-    public long getIdPost() {
+    public Long getIdPost() {
         return idPost;
     }
 
@@ -132,5 +132,22 @@ public class Post {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "idPost=" + idPost +
+                ", published=" + published +
+                ", updated=" + updated +
+                ", url='" + url + '\'' +
+                ", title='" + title + '\'' +
+                ", translatedTitle='" + translatedTitle + '\'' +
+                ", content='" + content + '\'' +
+                ", translatedContent='" + translatedContent + '\'' +
+                ", originalLanguage='" + originalLanguage + '\'' +
+                ", translatedLanguage='" + translatedLanguage + '\'' +
+                ", user=" + user +
+                '}';
     }
 }
