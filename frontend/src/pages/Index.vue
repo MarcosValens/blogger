@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-4">
         <q-input label="Search" v-model="text" @input="filterPosts" class="q-ma-sm" />
-        <q-scroll-area class="fit">
+        <q-scroll-area class="fit window-height">
           <q-list v-for="(post, index) in postsCopy" :key="post.idPost">
             <Post :post="post" :index="index" @click.native="setPost(post)" class="q-ma-sm" />
             <q-separator />
@@ -49,7 +49,8 @@ export default {
       posts: [],
       postsCopy: [],
       text: "",
-      selectedPost: null
+      selectedPost: null,
+      languages: []
     };
   },
   methods: {
@@ -61,15 +62,30 @@ export default {
       this.selectedPost = post;
     }
   },
-  created() {
+  async created() {
     const url = `${process.env.JAVA_ENDPOINT}/all`;
+    const languages = await fetch(process.env.ESLICEU_URL, {
+      method: "POST",
+      body: JSON.stringify({
+        MethodName: "languages",
+        params: ""
+      }),
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      }
+    }).then(r => r.json());
     this.$axios
-      .get(url, {
-        withCredentials: true,
-        
-      })
+      .get(url)
       .then(({ data }) => {
-        this.posts = data;
+        this.posts = data.map(post => {
+          post.originalLanguage = languages.find(
+            ({ code }) => code === post.originalLanguage
+          ).name;
+          post.translatedLanguage = languages.find(
+            ({ code }) => code === post.translatedLanguage
+          ).name;
+          return post;
+        });
         this.postsCopy = this.posts;
       })
       .catch(error => {
