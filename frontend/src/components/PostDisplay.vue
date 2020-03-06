@@ -23,9 +23,9 @@
       </div>
     </div>
     <div class="row">
-        <div class="col q-ma-md text-weight-light text-center">
-            <p>Created at: {{ post.createdAt }} </p>
-        </div>
+      <div class="col q-ma-md text-weight-light text-center">
+        <p>Created at: {{ post.published | format }}</p>
+      </div>
     </div>
   </div>
 </template>
@@ -37,6 +37,11 @@ export default {
     post: {
       type: Object,
       required: true
+    }
+  },
+  filters: {
+    format([year, month, day, hours, minutes, seconds]) {
+      return `${year}/${month}/${day} - ${hours}:${minutes}:${seconds}`
     }
   }
 };

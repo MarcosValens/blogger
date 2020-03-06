@@ -308,7 +308,11 @@ export default {
             if(audioTranscripcionJSON[0].confianca > 0.7){
               alert("Traduccion por voz realizada.");
               //TODO meter el texto en el textarera
-              this.translate(audioTranscripcionJSON[0].transcripcio);
+              const transcripcion = audioTranscripcionJSON[0].transcripcio
+              const texto = await this.translate(transcripcion);
+              this.content.translated = texto;
+              this.content.original = transcripcion
+
             }
          },
 

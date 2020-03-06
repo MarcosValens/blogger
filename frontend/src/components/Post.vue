@@ -46,7 +46,9 @@ export default {
           .then(data => {
             this.$router.go();
           })
-          .catch(console.log);
+          .catch(err => {
+            alert("Could not delete post")
+          });
       }
     }
   }
