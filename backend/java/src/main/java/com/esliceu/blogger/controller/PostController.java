@@ -51,10 +51,22 @@ public class PostController {
         String token = request.getHeader("Authorization").replace("Bearer ", "");
         String email = tokenManager.getClaims(token).get("email", String.class);
 
-        Post post = new Post();
         User user = userManager.findByEmailOrUsername(email, email);
-        post.setUser(user);
+
         JsonObject convertedObject = new Gson().fromJson(postJson, JsonObject.class);
+        Long postId = null;
+        try {
+            postId = convertedObject.get("idPost").getAsLong();
+        } catch(Exception e) {
+            // Do nothing
+        }
+        Post post;
+        if (postId != null) {
+            post = postManager.getPostById(postId);
+        } else {
+            post = new Post();
+        }
+        post.setUser(user);
 
         post.setTitle(convertedObject.get("title").getAsString());
         post.setContent(convertedObject.get("content").getAsString());
@@ -66,6 +78,8 @@ public class PostController {
         post.setTranslatedLanguage(convertedObject.get("translatedLanguage").getAsString());
         if (post.getIdPost() == null) {
             post.setPublished(LocalDateTime.now());
+        } else {
+            post.setUpdated(LocalDateTime.now());
         }
 
         postManager.saveOrUpdatePost(post);
@@ -73,12 +87,13 @@ public class PostController {
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 
-    @GetMapping("/update/{idPost}")
-    public Post updatePost(@PathVariable(value = "idPost") String idPost) {
+
+    @GetMapping("/get/{idPost}")
+    public Post getPost(@PathVariable("idPost") String idPost) {
         return postManager.getPostById(Long.parseLong(idPost));
     }
 
-    @GetMapping("/deletePost/{idPost}")
+    @PostMapping("/deletePost/{idPost}")
     public void deletePost(@PathVariable("idPost") String idPost) {
         Post post = postManager.getPostById(Long.parseLong(idPost));
         postManager.deletePost(post);

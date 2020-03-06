@@ -1,7 +1,6 @@
 package com.esliceu.blogger.interceptors;
 
 import com.esliceu.blogger.manager.TokenManager;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -9,6 +8,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Enumeration;
 
 @Component
 public class TokenInterceptor implements HandlerInterceptor {
@@ -18,9 +18,12 @@ public class TokenInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        System.out.println(request.getMethod());
+        if (request.getMethod().equals("OPTIONS")) {
+            return true;
+        }
         try {
             String auth = request.getHeader("Authorization");
-
             if (auth == null || auth.isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return false;
