@@ -338,6 +338,12 @@ export default {
   },
   async created() {
     //  IndexedDB
+    this.$axios.get(`${process.env.JAVA_ENDPOINT}/all`).then().catch(error => {
+      if (error.response.status === 401) {
+        this.$router.push("/login")
+      }
+    })
+    this.$axios.get
     this.db = await this.getDb();
     this.aliments = await this.getAlimentsFromDb();
     this.ready = true;
@@ -345,6 +351,7 @@ export default {
 
   mounted() {
     this.video = document.querySelector("#video");
+    
     navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
       video.srcObject = stream;
       video.play();

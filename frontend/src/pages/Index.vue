@@ -63,7 +63,12 @@ export default {
     }
   },
   async created() {
-    const url = `${process.env.JAVA_ENDPOINT}/all`;
+    this.$axios.get(`${process.env.JAVA_ENDPOINT}/all`).then().catch(error => {
+      if (error.response.status === 401) {
+        this.$router.push("/login")
+      }
+    })
+    const url = `${process.env.JAVA_ENDPOINT}/userPosts`;
     const languages = await fetch(process.env.ESLICEU_URL, {
       method: "POST",
       body: JSON.stringify({
@@ -87,9 +92,6 @@ export default {
           return post;
         });
         this.postsCopy = this.posts;
-      })
-      .catch(error => {
-        console.log(error);
       });
   },
   mounted() {

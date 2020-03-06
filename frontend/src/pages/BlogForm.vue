@@ -33,10 +33,10 @@
                   v-model="dstLanguage"
                   :options="languages"
                   label="Original language"
-                  @change="changeLanguages"
+                  @input.native="changeLanguages"
                 />
-                <q-btn round color="primary" icon="mic" @click="startRecordingAudio()"/>
-                <q-btn round v-if="recording" color="primary" icon="stop" id="stopRecording"/>
+                <q-btn round color="primary" icon="mic" @click="startRecordingAudio()" />
+                <q-btn round v-if="recording" color="primary" icon="stop" id="stopRecording" />
 
                 <q-input
                   @input="handleInput(false)"
@@ -74,7 +74,7 @@
                   v-model="translatedLanguage"
                   :options="languages"
                   label="Translation language"
-                  @change="changeLanguages"
+                  @input.native="changeLanguages"
                 />
                 <q-input
                   readonly
@@ -134,6 +134,11 @@ export default {
     };
   },
   async created() {
+    this.$axios.get(`${process.env.JAVA_ENDPOINT}/all`).then().catch(error => {
+      if (error.response.status === 401) {
+        this.$router.push("/login")
+      }
+    })
     const idPost = this.$route.params.id;
     const languages = await this.loadLanguages(post);
     const post = await this.getPost(idPost);
@@ -145,6 +150,11 @@ export default {
     this.languages = languages;
   },
   methods: {
+    async changeLanguages() {
+      console.log("Changing");
+      await this.handleInput(false);
+      await this.handleInput(true);
+    },
     setPost(post, languages) {
       this.title.translated = post.translatedTitle;
       this.title.original = post.title;
@@ -180,12 +190,13 @@ export default {
       return mapped;
     },
     async getPost(id) {
+      if (!id) return null;
       try {
         const response = await this.$axios.get(
           `${process.env.JAVA_ENDPOINT}/get/${id}`
         );
         return response.data;
-      } catch (e) {
+      } catch (error) {
         return null;
       }
     },
@@ -215,7 +226,7 @@ export default {
           }
         );
         return translation.data;
-      } catch (e) {
+      } catch (error) {
         return "";
       }
     },
@@ -224,11 +235,19 @@ export default {
       const textToTranslate = isTitle
         ? this.title.original
         : this.content.original;
-      if (!this.dstLanguage.value || !this.translatedLanguage.value) {
+      if (!this.canTranslate()) {
         return this.setText(textToTranslate, isTitle);
       }
       const text = await this.translate(textToTranslate);
       this.setText(text, isTitle);
+    },
+
+    canTranslate() {
+      return (
+        this.translatedLanguage.value &&
+        this.dstLanguage.value &&
+        this.translatedLanguage.value !== this.dstLanguage.value
+      );
     },
 
     setText(text, isTitle) {
@@ -261,72 +280,73 @@ export default {
       if (idPost) data.idPost = idPost;
       this.$axios
         .post(`${process.env.JAVA_ENDPOINT}/save`, data)
-        .then(err => {
+        .then(() => {
           this.$router.replace("/blogger");
         })
-        .catch(err => {
+        .catch(error => {
           this.errors.push(err.response.data);
         });
     },
-     async startRecordingAudio(){
-       console.log("Grabando...");
-       this.recording = true;
-       let userMedia = navigator.mediaDevices.getUserMedia({
-         audio: true,
-         video: false
-       });
+    async startRecordingAudio() {
+      console.log("Grabando...");
+      this.recording = true;
+      let userMedia = navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: false
+      });
 
-       userMedia.then((mediaStream) => {
-         console.log(mediaStream);
-         let mediaRecorder = new MediaRecorder(mediaStream);
-         mediaRecorder.start();
+      userMedia.then(mediaStream => {
+        console.log(mediaStream);
+        let mediaRecorder = new MediaRecorder(mediaStream);
+        mediaRecorder.start();
 
-         document.querySelector("#stopRecording").onclick = () => {
-            mediaRecorder.stop();
-         }
+        document.querySelector("#stopRecording").onclick = () => {
+          mediaRecorder.stop();
+        };
 
-         mediaRecorder.onstop = async () =>{
-            let audio = document.createElement('audio');
-            audio.controls = true;
-            const blob = new Blob(this.chunks, {
-              'type': 'audio/ogg; codecs=opus'
-            });
+        (mediaRecorder.onstop = async () => {
+          let audio = document.createElement("audio");
+          audio.controls = true;
+          const blob = new Blob(this.chunks, {
+            type: "audio/ogg; codecs=opus"
+          });
 
-            let formData = new FormData();
+          let formData = new FormData();
 
-            formData.append("arxiu", blob);
-            formData.append("MethodName", "transcribe_sync");
-            formData.append("params", "{}");
+          formData.append("arxiu", blob);
+          formData.append("MethodName", "transcribe_sync");
+          formData.append("params", "{}");
 
-            let audioTranscripcion = await fetch("http://server247.cfgs.esliceu.net/bloggeri18n/blogger.php", {
+          let audioTranscripcion = await fetch(
+            "http://server247.cfgs.esliceu.net/bloggeri18n/blogger.php",
+            {
               method: "POST",
               body: formData
-            });
-            let audioTranscripcionJSON = await audioTranscripcion.json();
-            console.log(audioTranscripcionJSON);
-
-            if(audioTranscripcionJSON[0].confianca > 0.7){
-              alert("Traduccion por voz realizada.");
-              //TODO meter el texto en el textarera
-              const transcripcion = audioTranscripcionJSON[0].transcripcio
-              const texto = await this.translate(transcripcion);
-              this.content.translated = texto;
-              this.content.original = transcripcion
-
             }
-         },
+          );
+          let audioTranscripcionJSON = await audioTranscripcion.json();
+          console.log(audioTranscripcionJSON);
 
-          mediaRecorder.ondataavailable = e => {
+          if (audioTranscripcionJSON[0].confianca > 0.7) {
+            alert("Traduccion por voz realizada.");
+            //TODO meter el texto en el textarera
+            const transcripcion = audioTranscripcionJSON[0].transcripcio;
+            const texto = await this.translate(transcripcion);
+            this.content.translated = texto;
+            this.content.original = transcripcion;
+          }
+        }),
+          (mediaRecorder.ondataavailable = e => {
             console.log(e);
             this.chunks.push(e.data);
-          }
+          });
 
-          console.log(mediaRecorder);
-       }),
-       userMedia.catch(function (err) {
-         console.log(err.name);
-       });
-     },
+        console.log(mediaRecorder);
+      }),
+        userMedia.catch(function(err) {
+          console.log(err.name);
+        });
+    }
   }
 };
 </script>

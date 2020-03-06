@@ -36,10 +36,11 @@ public class PostController {
     }
 
     @GetMapping("userPosts")
-    public List<Post> getUserPosts(@RequestBody() String userJson) {
-        JsonObject convertedObject = new Gson().fromJson(userJson, JsonObject.class);
-        String userString = convertedObject.get("user").getAsString();
-        User user = userManager.findByEmailOrUsername(userString, userString);
+    public List<Post> getUserPosts(HttpServletRequest request) {
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
+        String email = tokenManager.getClaims(token).get("email", String.class);
+
+        User user = userManager.findByEmailOrUsername(email, email);
         return postManager.getUserPosts(user);
     }
 
