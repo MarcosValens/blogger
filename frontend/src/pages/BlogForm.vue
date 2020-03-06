@@ -18,6 +18,7 @@
           <q-card square bordered class="shadow-1">
             <q-card-section>
               <q-form class="q-gutter-md">
+                <q-input type="hidden" v-model="idPost" />
                 <q-input
                   @input="handleInput(true)"
                   square
@@ -116,6 +117,7 @@ export default {
       translatedLanguage: "",
       languages: [],
       cancel: null,
+      idPost: "",
       title: {
         original: "",
         translated: ""
@@ -128,12 +130,35 @@ export default {
   },
   async created() {
     const idPost = this.$route.params.id;
-    const post = await this.getPost(idPost);
     const languages = await this.loadLanguages(post);
+    const post = await this.getPost(idPost);
+
+    if (post) {
+      this.idPost = idPost;
+      this.setPost(post, languages);
+    }
     this.languages = languages;
   },
   methods: {
-    async loadLanguages(post) {
+    setPost(post, languages) {
+      this.title.translated = post.translatedTitle;
+      this.title.original = post.title;
+      this.content.translated = post.translatedContent;
+      this.content.original = post.content;
+      const labels = {
+        dst: languages.find(({ value }) => value === post.originalLanguage),
+        trs: languages.find(({ value }) => value === post.translatedLanguage)
+      };
+      this.dstLanguage = {
+        label: labels.dst.label,
+        value: post.originalLanguage
+      };
+      this.translatedLanguage = {
+        label: labels.trs.label,
+        value: post.translatedLanguage
+      };
+    },
+    async loadLanguages() {
       const languages = await fetch(process.env.ESLICEU_URL, {
         method: "POST",
         body: JSON.stringify({
@@ -150,7 +175,14 @@ export default {
       return mapped;
     },
     async getPost(id) {
-      return null;
+      try {
+        const response = await this.$axios.get(
+          `${process.env.JAVA_ENDPOINT}/get/${id}`
+        );
+        return response.data;
+      } catch (e) {
+        return null;
+      }
     },
 
     async translate(text) {
@@ -188,9 +220,13 @@ export default {
         ? this.title.original
         : this.content.original;
       if (!this.dstLanguage.value || !this.translatedLanguage.value) {
-        return textToTranslate;
+        return this.setText(textToTranslate, isTitle);
       }
       const text = await this.translate(textToTranslate);
+      this.setText(text, isTitle);
+    },
+
+    setText(text, isTitle) {
       if (isTitle) {
         this.title.translated = text;
       } else {
@@ -200,10 +236,6 @@ export default {
 
     async changeLanguages() {},
     send() {
-      /*
-     idPost, published, url, title, translatedTitle, content,
-      translatedTitle, originalLanguage, translatedLanguage
-user*/
       const title = this.title.original;
       const content = this.content.original;
       const originalLanguage = this.dstLanguage.value;
@@ -211,7 +243,7 @@ user*/
       const translatedTitle = this.title.translated;
       const translatedContent = this.content.translated;
       const translatedLanguage = this.translatedLanguage.value;
-
+      const idPost = this.idPost;
       const data = {
         title,
         content,
@@ -220,9 +252,8 @@ user*/
         translatedTitle,
         originalLanguage
       };
-      console.log(data);
       this.errors = [];
-
+      if (idPost) data.idPost = idPost;
       this.$axios
         .post(`${process.env.JAVA_ENDPOINT}/save`, data)
         .then(err => {
