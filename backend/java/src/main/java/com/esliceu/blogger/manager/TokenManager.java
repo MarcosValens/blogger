@@ -24,6 +24,9 @@ public class TokenManager {
 
     public Boolean validateToken(String token) {
         Claims claims = getClaims(token);
+        if(token == null){
+            return false;
+        }
         Date expirationToken = claims.getExpiration();
         Date date = new Date();
         return date.before(expirationToken);
