@@ -16,10 +16,18 @@ public class CorsConfig implements WebMvcConfigurer {
     @Value("${url.development}")
     private String origin;
 
+    @Override
     public void addCorsMappings(CorsRegistry corsRegistry){
         corsRegistry.addMapping("/**")
                 .allowCredentials(true)
                 .allowedOrigins(origin)
-                .allowedMethods("PUT", "POST", "GET", "DELETE", "OPTIONS");
+                .allowedMethods("GET","POST","PUT","DELETE","OPTIONS");
+        /*
+
+                .allowedHeaders("Authorization", "Origin", "X-Requested-With", "Content-Type",
+                        "Accept", "Sec-Fetch-Dest", "Referer", "User-Agent")
+         */
+
+
     }
 }

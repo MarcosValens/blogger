@@ -40,6 +40,7 @@ export class UserController {
     @Middleware(passport.authenticate("google"))
     private async loginGoogleCallback(req: Request, res: Response): Promise<any> {
         const user: any = req.user;
+
         await userService.isValidate(user.profile.email, user.profile.given_name, user.profile.family_name);
         const token = TokenManager.generateToken(user.profile.email);
         res.redirect(`${get.clientUrl()}/#/blogger?token=${token}`);

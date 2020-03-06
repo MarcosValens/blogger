@@ -76,7 +76,7 @@ export default {
         })
         .then(response => {
           const token = response.data.token;
-          
+
           localStorage.setItem("token",token)
           this.$router.push(`/blogger`);
         })
