@@ -14,5 +14,4 @@ public interface PostRepository extends CrudRepository<Post, Long> {
 
     Post findByIdPost(long idPost);
 
-
 }

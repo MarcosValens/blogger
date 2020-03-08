@@ -11,11 +11,6 @@ public class UserManager {
     @Autowired
     UserRepository userRepository;
 
-
-    public boolean validate(String user, String password) {
-        return (userRepository.findByEmailAndPassword(user, password) != null);
-    }
-
     public User findByEmailOrUsername(String userName, String userEmail) {
         try {
             return userRepository.findByEmailOrUsername(userName, userEmail);
