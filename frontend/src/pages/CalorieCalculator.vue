@@ -88,6 +88,7 @@
   max-height: 700px;
   margin-left: 5%;
 }
+
 #selectedExercise {
   border: 1px solid #1976d2;
   width: 121px;
@@ -109,7 +110,6 @@
 
 <script>
 import * as ml5 from "ml5";
-import * as p5 from "p5";
 
 const DB_NAME = "aliments";
 const DB_VERSION = 1;
@@ -338,12 +338,15 @@ export default {
   },
   async created() {
     //  IndexedDB
-    this.$axios.get(`${process.env.JAVA_ENDPOINT}/all`).then().catch(error => {
-      if (error.response.status === 401) {
-        this.$router.push("/login")
-      }
-    })
-    this.$axios.get
+    this.$axios
+      .get(`${process.env.JAVA_ENDPOINT}/all`)
+      .then()
+      .catch(error => {
+        if (error.response.status === 401) {
+          this.$router.push("/login");
+        }
+      });
+    this.$axios.get;
     this.db = await this.getDb();
     this.aliments = await this.getAlimentsFromDb();
     this.ready = true;
@@ -351,7 +354,7 @@ export default {
 
   mounted() {
     this.video = document.querySelector("#video");
-    
+
     navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
       video.srcObject = stream;
       video.play();
@@ -365,6 +368,7 @@ export default {
       classifier.classify().then(async results => {
         const promises = results.map(result => {
           if (result.confidence > 0.99) {
+            alert("Se ha reconocido el alimento.");
             return this.addAlimentToDb(result);
           }
         });

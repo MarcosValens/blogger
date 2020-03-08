@@ -37,8 +37,6 @@ export default {
   },
   methods: {
     remove(id, index) {
-      console.log(index)
-      // TODO: Make this be a dialog
       const toDelete = confirm("Are you sure you want to delete the post?");
       if (toDelete) {
         this.$axios
