@@ -8,7 +8,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Enumeration;
 
 @Component
 public class TokenInterceptor implements HandlerInterceptor {
@@ -30,16 +29,16 @@ public class TokenInterceptor implements HandlerInterceptor {
             }
 
             String token = auth.replace("Bearer ", "");
-            Boolean valid =  tokenManager.validateToken(token);
-            if (!valid){
+            Boolean valid = tokenManager.validateToken(token);
+            if (!valid) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return false;
             }
             response.setStatus(HttpServletResponse.SC_OK);
             return true;
-        } catch (JwtException e){
+        } catch (JwtException e) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.sendError(HttpServletResponse.SC_FORBIDDEN,e.getMessage());
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
         }
         return false;
     }
