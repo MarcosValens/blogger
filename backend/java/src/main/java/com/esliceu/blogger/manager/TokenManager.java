@@ -18,7 +18,7 @@ public class TokenManager {
     private JwtProperties jwtProperties;
 
     public Claims getClaims(String token) {
-        try{
+        try {
             SignatureAlgorithm algorithm = SignatureAlgorithm.HS256;
 
             Key signingKey = new SecretKeySpec(jwtProperties.getJwtKey().getBytes(), algorithm.getJcaName());
@@ -26,7 +26,7 @@ public class TokenManager {
                     .setSigningKey(signingKey)
                     .parseClaimsJws(token)
                     .getBody();
-        } catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }

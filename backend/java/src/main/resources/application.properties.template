@@ -1,22 +1,18 @@
 #Data source
-           #Indica el driver/lib para conectar java a mysql
-           spring.datasource.driver-class-name=
-
-           #Url donde esta el servicio de tu mysql y el nombre de la base de datos
-           spring.datasource.url=
-           spring.main.allow-bean-definition-overriding=true
-           #Usuario y contrasena para tu base de datos descrita en la linea anterior
-           spring.datasource.username=
-           spring.datasource.password=
-
-           #[opcional]Imprime en tu consola las instrucciones hechas en tu base de datos.
-           #spring.jpa.show-sql =
-
-           spring.jpa.properties.hibernate.dialect=
-           spring.jpa.properties.hibernate.show_Sql=
-           spring.jpa.properties.hibernate.format_sql=
-           spring.jpa.hibernate.ddl-auto=
-
+#Indica el driver/lib para conectar java a mysql
+spring.datasource.driver-class-name=
+#Url donde esta el servicio de tu mysql y el nombre de la base de datos
+spring.datasource.url=
+spring.main.allow-bean-definition-overriding=true
+#Usuario y contrasena para tu base de datos descrita en la linea anterior
+spring.datasource.username=
+spring.datasource.password=
+#[opcional]Imprime en tu consola las instrucciones hechas en tu base de datos.
+#spring.jpa.show-sql =
+spring.jpa.properties.hibernate.dialect=
+spring.jpa.properties.hibernate.show_Sql=
+spring.jpa.properties.hibernate.format_sql=
+spring.jpa.hibernate.ddl-auto=
 url.development=http://172.16.3.75:8085
 url.production=
 jwt.secret=

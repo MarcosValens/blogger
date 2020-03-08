@@ -17,17 +17,10 @@ public class CorsConfig implements WebMvcConfigurer {
     private String origin;
 
     @Override
-    public void addCorsMappings(CorsRegistry corsRegistry){
+    public void addCorsMappings(CorsRegistry corsRegistry) {
         corsRegistry.addMapping("/**")
                 .allowCredentials(true)
                 .allowedOrigins(origin)
-                .allowedMethods("GET","POST","PUT","DELETE","OPTIONS");
-        /*
-
-                .allowedHeaders("Authorization", "Origin", "X-Requested-With", "Content-Type",
-                        "Accept", "Sec-Fetch-Dest", "Referer", "User-Agent")
-         */
-
-
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
     }
 }

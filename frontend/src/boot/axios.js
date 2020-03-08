@@ -7,7 +7,7 @@ export default async ({ Vue, router }) => {
     // Add a request interceptor
     axios.interceptors.request.use(function (config) {
         if (config.url.includes("login") || config.url.includes("esliceu")) return config;
-        config.withCredentials = true;
+        console.log(config)
         config.headers['Authorization'] = `Bearer ${localStorage.getItem("token")}`
         return config;
     }, function (error) {

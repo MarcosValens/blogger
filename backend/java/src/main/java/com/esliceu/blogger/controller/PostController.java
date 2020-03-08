@@ -1,6 +1,5 @@
 package com.esliceu.blogger.controller;
 
-
 import com.esliceu.blogger.entity.Post;
 import com.esliceu.blogger.entity.User;
 import com.esliceu.blogger.manager.PostManager;
@@ -58,7 +57,7 @@ public class PostController {
         Long postId = null;
         try {
             postId = convertedObject.get("idPost").getAsLong();
-        } catch(Exception e) {
+        } catch (Exception e) {
             // Do nothing
         }
         Post post;

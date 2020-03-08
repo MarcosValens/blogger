@@ -1,6 +1,6 @@
-import { User } from "../model/User"
+import {User} from "../model/User"
 
-export async function validate(email: string, password: string){
+export async function validate(email: string, password: string) {
     const user = await User.findOne({
         where: {
             email

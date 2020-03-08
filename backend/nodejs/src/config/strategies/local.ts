@@ -1,5 +1,6 @@
 import * as LocalSt from 'passport-local';
-import { User } from './../../model/User';
+import {User} from '../../model/User';
+
 const LocalStrategy = LocalSt.Strategy;
 
 async function callback(email, password, done) {
