@@ -261,7 +261,6 @@ export default {
         let request = window.indexedDB.open(DB_NAME, DB_VERSION);
 
         request.onerror = e => {
-          console.log("Error opening db", e);
           reject("Error");
         };
 
@@ -324,10 +323,6 @@ export default {
                 updateData.calories == null
               ) {
                 updateData.calories = aliment.calories;
-                const request = cursor.update(updateData);
-                request.onsuccess = function() {
-                  console.log("Actualizado!");
-                };
               }
             });
             cursor.continue();

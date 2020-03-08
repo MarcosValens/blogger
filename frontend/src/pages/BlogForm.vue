@@ -150,7 +150,6 @@ export default {
   },
   methods: {
     async changeLanguages() {
-      console.log("Changing");
       await this.handleInput(false);
       await this.handleInput(true);
     },
@@ -287,7 +286,6 @@ export default {
         });
     },
     async startRecordingAudio() {
-      console.log("Grabando...");
       this.recording = true;
       let userMedia = navigator.mediaDevices.getUserMedia({
         audio: true,
@@ -335,10 +333,7 @@ export default {
           (mediaRecorder.ondataavailable = e => {
             this.chunks.push(e.data);
           });
-      }),
-        userMedia.catch(function(err) {
-          console.log(err.name);
-        });
+      })
     }
   }
 };

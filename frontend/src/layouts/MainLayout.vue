@@ -19,11 +19,6 @@
 
 <script>
 export default {
-  name: "MainLayout",
-  methods: {
-    check() {
-      console.log("Loaded")
-    }
-  }
+  name: "MainLayout"
 };
 </script>
