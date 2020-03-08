@@ -18,7 +18,6 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        System.out.println("Token interceptor added");
         registry.addInterceptor(tokenInterceptor()).addPathPatterns("/**/*");
     }
 }
