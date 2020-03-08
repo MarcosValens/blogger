@@ -23,7 +23,6 @@
               <q-btn color="blue" size="lg" class="full-width" label="Login" @click="login" />
             </q-card-actions>
             <q-card-actions>
-              <!-- TODO: Remove hardcoded endpoint -->
               <q-btn color="blue" size="lg" class="full-width" label="Login with google" type="a" :href="google" />
             </q-card-actions>
           </q-card-section>
@@ -67,7 +66,6 @@ export default {
     };
   },
   mounted() {
-    console.log("Clearing token");
     localStorage.clear();
   },
   methods: {

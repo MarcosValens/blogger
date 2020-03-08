@@ -1,6 +1,7 @@
 import {Sequelize} from 'sequelize-typescript';
 import * as path from 'path';
 import {User} from '../model/User';
+
 require('./../config/environment');
 const mysqlHost: string = process.env.MYSQL_HOST;
 const mysqlUser: string = process.env.MYSQL_USER;

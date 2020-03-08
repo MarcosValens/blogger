@@ -15,7 +15,6 @@
     "@quasar/extras": "^1.0.0",
     "axios": "^0.18.1",
     "ml5": "^0.4.3",
-    "p5": "^0.10.2",
     "quasar": "^1.0.0",
     "quasar-dotenv": "^1.0.5",
     "vue-google-login": "^2.0.3",

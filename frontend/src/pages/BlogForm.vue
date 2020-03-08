@@ -18,7 +18,6 @@
           <q-card square bordered class="shadow-1">
             <q-card-section>
               <q-form class="q-gutter-md">
-                <q-input type="hidden" v-model="idPost" />
                 <q-input
                   @input="handleInput(true)"
                   square
@@ -47,6 +46,7 @@
                   type="textarea"
                   label="Content"
                 />
+                <q-input type="hidden" v-model="idPost" />
               </q-form>
 
               <q-card-actions>
@@ -86,10 +86,6 @@
                   label="Content"
                 />
               </q-form>
-
-              <q-card-actions>
-                <q-btn color="blue" size="lg" class="full-width" label="Submit" @click="send" />
-              </q-card-actions>
             </q-card-section>
           </q-card>
         </div>
@@ -134,11 +130,14 @@ export default {
     };
   },
   async created() {
-    this.$axios.get(`${process.env.JAVA_ENDPOINT}/all`).then().catch(error => {
-      if (error.response.status === 401) {
-        this.$router.push("/login")
-      }
-    })
+    this.$axios
+      .get(`${process.env.JAVA_ENDPOINT}/all`)
+      .then()
+      .catch(error => {
+        if (error.response.status === 401) {
+          this.$router.push("/login");
+        }
+      });
     const idPost = this.$route.params.id;
     const languages = await this.loadLanguages(post);
     const post = await this.getPost(idPost);
@@ -296,7 +295,6 @@ export default {
       });
 
       userMedia.then(mediaStream => {
-        console.log(mediaStream);
         let mediaRecorder = new MediaRecorder(mediaStream);
         mediaRecorder.start();
 
@@ -325,11 +323,9 @@ export default {
             }
           );
           let audioTranscripcionJSON = await audioTranscripcion.json();
-          console.log(audioTranscripcionJSON);
 
           if (audioTranscripcionJSON[0].confianca > 0.7) {
             alert("Traduccion por voz realizada.");
-            //TODO meter el texto en el textarera
             const transcripcion = audioTranscripcionJSON[0].transcripcio;
             const texto = await this.translate(transcripcion);
             this.content.translated = texto;
@@ -337,11 +333,8 @@ export default {
           }
         }),
           (mediaRecorder.ondataavailable = e => {
-            console.log(e);
             this.chunks.push(e.data);
           });
-
-        console.log(mediaRecorder);
       }),
         userMedia.catch(function(err) {
           console.log(err.name);

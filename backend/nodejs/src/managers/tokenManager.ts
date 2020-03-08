@@ -1,4 +1,5 @@
 import * as jwt from 'jsonwebtoken';
+
 require('./../config/environment');
 export default class TokenManager {
 
