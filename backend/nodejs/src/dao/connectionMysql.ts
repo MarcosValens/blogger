@@ -1,5 +1,4 @@
 import {Sequelize} from 'sequelize-typescript';
-import * as path from 'path';
 import {User} from '../model/User';
 
 require('./../config/environment');
@@ -8,7 +7,7 @@ const mysqlUser: string = process.env.MYSQL_USER;
 const mysqlPassword: string = process.env.MYSQL_PASSWORD;
 const mysqlUrl: string = process.env.MYSQL_URL;
 (async () => {
-    const sequelize = new Sequelize(`mysql://${mysqlUser}:${mysqlPassword}@${mysqlHost}/${mysqlUrl}`,{
+    const sequelize = new Sequelize(`mysql://${mysqlUser}:${mysqlPassword}@${mysqlHost}/${mysqlUrl}`, {
         define: {
             timestamps: false
         }

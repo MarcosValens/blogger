@@ -11,7 +11,7 @@ passport.deserializeUser(function (obj, done) {
 
 for (const strategy in strategies) {
     const _strategy = (strategies as any)[strategy];
-    console.log(_strategy)
+    console.log(_strategy);
     passport.use(_strategy);
 }
 

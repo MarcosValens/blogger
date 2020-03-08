@@ -14,4 +14,4 @@ export const get = {
     whitelist(separator?: string): Array<string> {
         return whitelist.split(separator || " ")
     }
-}
+};

@@ -1,14 +1,14 @@
 import * as bodyParser from 'body-parser';
 import * as controllers from './controllers';
 import passport from 'passport';
-import { Server } from '@overnightjs/core';
+import {Server} from '@overnightjs/core';
 import cors from 'cors';
 
 export default class BloggerServer extends Server {
     constructor(mode: boolean, whitelist: Array<string>) {
         super(mode);
         this.app.use(bodyParser.json());
-        this.app.use(bodyParser.urlencoded({ extended: true }));
+        this.app.use(bodyParser.urlencoded({extended: true}));
 
         const options: cors.CorsOptions = {
             origin: 'http://localhost:9000',
@@ -36,7 +36,8 @@ export default class BloggerServer extends Server {
     }
 
 
-    public start(port: number, callback: any = () => { }): void {
+    public start(port: number, callback: any = () => {
+    }): void {
         this.app.listen(port, callback);
     }
 }

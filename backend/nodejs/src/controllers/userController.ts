@@ -1,14 +1,14 @@
-import { Controller, Post, Get, Middleware } from '@overnightjs/core';
-import { Request, Response } from 'express';
-import {get} from './../utils';
-import { User } from './../model/User';
+import {Controller, Post, Get, Middleware} from '@overnightjs/core';
+import {Request, Response} from 'express';
+import {get} from '../utils';
 import passport from 'passport';
 import TokenManager from './../managers/tokenManager';
-import { UserService } from './../service/userService';
+import {UserService} from '../service/userService';
 
 require("./../config/passport");
 require('./../dao/connectionMysql');
 const userService: UserService = new UserService();
+
 @Controller("users")
 export class UserController {
 
